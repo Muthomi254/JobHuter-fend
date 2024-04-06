@@ -1,5 +1,7 @@
+"use client" ; 
 import React from 'react';
-import cvImage from '../assests/cv_image.jpg'; // Import your CV image
+import cvImage from '../assests/cv_image.jpg'; 
+import Link from 'next/link';
 
 function Body() {
   return (
@@ -12,14 +14,14 @@ function Body() {
               Build a professional CV effortlessly with our user-friendly app.
             </p>
             <button className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700">
-              Get Started
+              <Link href= "/register">Get Started</Link>
             </button>
-            <a
+            <Link
               href="/login"
               className="text-blue-600 hover:underline mt-2 block"
             >
               Already have an account? Login
-            </a>
+            </Link>
           </div>
           <img
             src={cvImage}
