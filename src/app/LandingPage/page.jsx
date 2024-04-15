@@ -1,4 +1,5 @@
 "use client" ; 
+
 import React from 'react';
 import cvImage from '../assests/cv_image.jpg'; 
 import Link from 'next/link';
