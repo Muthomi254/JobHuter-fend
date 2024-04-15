@@ -1,9 +1,29 @@
-import React from 'react'
+'use client';
 
-export default function page() {
+import React, { useState } from 'react';
+import { useAuth } from '../../(context)/authContext'; // Import the useAuth hook
+
+export default function Page() {
+  const { login } = useAuth(); // Destructure the login function from the useAuth hook
+
+  // Function to handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Create a new FormData object from the form
+    const formData = new FormData(event.target);
+
+    // Get the email and password from formData
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    // Call login function with form data
+    await login({ email, password });
+  };
+
   return (
     <div className="flex justify-center items-center h-screen">
-      <form className="max-w-md w-full px-4">
+      <form className="max-w-md w-full px-4" onSubmit={handleSubmit}>
         <div class="mb-5">
           <label
             for="email"
