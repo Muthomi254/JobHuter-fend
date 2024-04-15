@@ -1,78 +1,48 @@
+'use client';
 
-import React from 'react'
-import SocialMedia from './SocialMedia';
+import  { useState } from 'react';
+import ContactForm from './ContactForm';
+import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 
+const ContactContainer = ({ recordedData }) => {
+  const [showForm, setShowForm] = useState(false);
 
-
-
-function Contact() {
-
+  const handleToggleForm = () => {
+    setShowForm(!showForm);
+  };
 
   return (
-    <div>
-      <div className="max-w-md mx-auto pb-10 pt-20 h-screen flex justify-center items-center">
-        <form className="max-w-md w-full px-4">
-          {' '}
-          <div class="grid gap-6 mb-10  md:grid-cols-2">
-            <div>
-              <label
-                for=" cv_email"
-                class="block  mb-2 text-sm font-medium text-gray-900 "
-              >
-                Cv_email
-              </label>
-              <input
-                type="text"
-                id=" cv_email"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder="john@example.com"
-                required
-              />
-            </div>
-            <div>
-              <label
-                for=" Phone"
-                class="block mb-2  text-sm font-medium text-gray-900 "
-              >
-                Phone Number
-              </label>
-
-              <input
-                type="Integer"
-                id=" Phone"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder="+5666899666"
-                required
-              />
-            </div>
-            <div>
-              <label
-                for="address"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                Address
-              </label>
-              <input
-                type="text"
-                id="address"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder="Address"
-                required
-              />
-            </div>
-
-            <SocialMedia />
+    <div className="max-w-md mx-auto pb-10 pt-5">
+      <h2 className="text-xl font-medium text-gray-900 mb-5">
+        Contact Information
+      </h2>
+      {!recordedData && !showForm && (
+        <button
+          onClick={handleToggleForm}
+          className="text-blue-500 hover:text-blue-700 focus:outline-none"
+        >
+          <div className="flex items-center">
+            <AiOutlinePlus className="h-5 w-5 mr-1" />
+            Add Contact Info
           </div>
+        </button>
+      )}
+      {showForm && (
+        <div>
           <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            onClick={handleToggleForm}
+            className="text-red-500 hover:text-red-700 focus:outline-none"
           >
-            Save
+            <div className="flex items-center">
+              <AiOutlineClose className="h-5 w-5 mr-1" />
+              Close Form
+            </div>
           </button>
-        </form>
-      </div>
+          <ContactForm initialData={recordedData} />
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export default Contact
+export default ContactContainer;
