@@ -3,7 +3,6 @@
 import { createContext, useContext, useState } from 'react';
 import axios from 'axios';
 
-
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 const AuthContext = createContext();
@@ -13,26 +12,25 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
- const register = async (formData) => {
-   try {
-     const response = await axios.post(`${BASE_URL}/register`, formData, {
-       headers: {
-         'Content-Type': 'application/json',
-       },
-     });
-     console.log('Request data:', formData); // Log request data
-     console.log('Response data:', response.data); // Log response data
-     return response.data;
-   } catch (error) {
-     console.error('Registration error:', error); // Log registration error
-     throw new Error('Registration failed');
-   }
- };
-
+  const register = async (formData) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/register`, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Request data:', formData); // Log request data
+      console.log('Response data:', response.data); // Log response data
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error); // Log registration error
+      throw new Error('Registration failed');
+    }
+  };
 
   const login = async (formData) => {
     try {
-      const response = await axios.post('/api/login', formData, {
+      const response = await axios.post(`${BASE_URL}/login `, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -40,13 +38,14 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user);
       localStorage.setItem('token', response.data.access_token);
     } catch (error) {
-      console.error('Login error:', 'Login Failed');
+      console.error('Login error:', error);
+      throw new Error('Login Failed');
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post('/api/logout', null, {
+      await axios.post(`${BASE_URL}/logout`, null, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -61,11 +60,15 @@ export const AuthProvider = ({ children }) => {
 
   const forgotPassword = async (formData) => {
     try {
-      const response = await axios.post('/api/forgot-password', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await axios.post(
+        `${BASE_URL}/forgot-password`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       console.log(response.data);
     } catch (error) {
       console.error('Forgot password error:', 'Forgot-password Failed');
