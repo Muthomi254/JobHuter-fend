@@ -12,7 +12,7 @@ const BasicInfoContainer = ({ recordedData }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto pb-10 pt-5">
+    <div className="max-w-md mx-auto pb-5 pt-5">
       <h2 className="text-xl font-medium text-gray-900 mb-5">
         Personal Information
       </h2>

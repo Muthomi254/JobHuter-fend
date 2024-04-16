@@ -4,7 +4,7 @@ import Calender from '../Calender';
 
 export default function BasicInfo() {
   return (
-    <div className="max-w-md mx-auto pb-10  pt-10 h-screen flex justify-center items-center ">
+    <div className="max-w-md mx-auto pb-5 pt-3 h-screen flex justify-center items-center ">
       {' '}
       <form>
         <div class="grid gap-6 mb-10  md:grid-cols-2">
@@ -49,7 +49,7 @@ export default function BasicInfo() {
               type="text"
               id="title"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder="Flowbite"
+              placeholder="Software Engineer"
               required
             />
           </div>

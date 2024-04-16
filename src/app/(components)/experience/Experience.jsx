@@ -51,7 +51,7 @@ function ProfessionalExperience() {
           onClick={handleAddExperience}
           className="text-blue-500 hover:text-blue-700 focus:outline-none"
         >
-          <div className="grid grid-cols-2">
+          <div className="flex items-center">
             <AiOutlinePlus className="h-5 w-5 mr-1" />
             Add Experience{' '}
           </div>
