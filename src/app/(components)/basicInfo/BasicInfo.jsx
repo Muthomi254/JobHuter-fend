@@ -1,9 +1,6 @@
-'use client';
-
 // BasicInfoContainer.js
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import BasicInfo from './BasicInfoForm';
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import useBasicInfo hook
 import {
   AiOutlineDelete,
@@ -26,7 +23,7 @@ const BasicInfoContainer = () => {
   };
 
   return (
-    <Link href="./BasicInfoForm">
+    <Link href="/basicinfo/BasicInfoForm">
       <div className="max-w-md mx-auto pb-5 pt-5 cursor-pointer">
         <h2 className="text-xl font-medium text-gray-900 mb-5">
           Personal Information
