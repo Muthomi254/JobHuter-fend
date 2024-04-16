@@ -1,4 +1,6 @@
 // These styles apply to every route in the application
+
+import { ThemeModeScript } from 'flowbite-react';
 import '../globals.css';
 import NavBar from './(components)/NavBar';
 import Footer from './(components)/Footer';
@@ -13,18 +15,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <ThemeModeScript />
+      </head>
       <body>
-        <NavBar/>
+        <NavBar />
 
-          <AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
 
-        {children}
-
-          </AuthProvider>
-
-        <Footer/>
-        
-        </body>
+        <Footer />
+      </body>
     </html>
   );
 }
