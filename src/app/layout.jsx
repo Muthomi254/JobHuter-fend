@@ -5,6 +5,7 @@ import '../globals.css';
 import NavBar from './(components)/NavBar';
 import Footer from './(components)/Footer';
 import { AuthProvider } from './(context)/authContext';
+import { BasicInfoProvider } from './(context)/basicInfoContext';
 
 export const metadata = {
   title: 'Create Next App',
