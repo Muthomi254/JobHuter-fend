@@ -18,7 +18,7 @@ export default function BasicInfo() {
     nationality: '',
     passport_id: '',
     gender: '',
-    image_data: '',
+    image_data: null, // Updated to handle file uploads
   });
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function BasicInfo() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    console.log('form data', formData);
   };
 
   const handleDateChange = (date) => {
@@ -41,49 +42,74 @@ export default function BasicInfo() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    reader.onloadend = () => {
-      // Convert the image data to base64 format
-      const imageData = reader.result.split(',')[1];
-      setFormData({ ...formData, image_data: imageData }); // Update the image_data field with the base64-encoded image data
-    };
+
+  reader.onloadend = () => {
+    // Convert the image data to base64 format
+    const imageData = reader.result.split(',')[1];
+    setFormData({ ...formData, image_data: imageData }); // Update the image_data field with the base64-encoded data
+  };
+
+
     reader.readAsDataURL(file); // Read the file as data URL
   };
 
- const handleSubmit = async (e) => {
-   e.preventDefault();
-   try {
-     console.log('Submitting formData:', formData);
+const handleSubmit = async () => {
+  try {
+    console.log('Submitting formData:', formData);
 
-     if (basicInfo) {
-       // Update existing basic info
-       const updatedData = {
-         ...basicInfo, // Include existing basic info data
-         ...formData, // Update with new form data
-       };
-       await updateBasicInfo(basicInfo.id, updatedData); // Call updateBasicInfo with updated data
-       Swal.fire({
-         icon: 'success',
-         title: 'Success!',
-         text: 'BasicInfo updated successfully!',
-       });
-     } else {
-       // Create new basic info
-       await createBasicInfo(formData); // Call createBasicInfo with form data
-       Swal.fire({
-         icon: 'success',
-         title: 'Success!',
-         text: 'BasicInfo created successfully!',
-       });
-     }
-   } catch (error) {
-     console.error('Error:', error);
-     Swal.fire({
-       icon: 'error',
-       title: 'Error!',
-       text: 'Failed to save BasicInfo',
-     });
-   }
- };
+    if (basicInfo) {
+      // Update existing basic info
+      const updatedData = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        job_title: formData.job_title,
+        date_of_birth: formData.date_of_birth,
+        nationality: formData.nationality,
+        passport_id: formData.passport_id,
+        gender: formData.gender,
+      };
+
+      // Create a new FormData object to handle file upload
+      const updatedFormData = new FormData();
+      for (const key in updatedData) {
+        updatedFormData.append(key, updatedData[key]);
+      }
+      if (formData.image_data) {
+        updatedFormData.append('image_data', formData.image_data);
+      }
+
+      await updateBasicInfo(updatedFormData); // Call updateBasicInfo with updated data
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'BasicInfo updated successfully!',
+      });
+    } else {
+      // Create new basic info
+      const formDataWithImage = new FormData();
+      for (const key in formData) {
+        formDataWithImage.append(key, formData[key]);
+      }
+      if (formData.image_data) {
+        formDataWithImage.append('image_data', formData.image_data);
+        console.log('image', formData.image_data);
+      }
+      await createBasicInfo(formDataWithImage); // Call createBasicInfo with form data
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'BasicInfo created successfully!',
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'Failed to save BasicInfo',
+    });
+  }
+};
 
 
   return (
@@ -152,7 +178,7 @@ export default function BasicInfo() {
               Date of birth
             </label>
             <div>
-               <Calender
+              <Calender
                 selected={formData.date_of_birth}
                 onChange={handleDateChange}
               />
