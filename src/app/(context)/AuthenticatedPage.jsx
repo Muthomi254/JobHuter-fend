@@ -10,9 +10,7 @@
   //  const { user } = useAuth(); // Destructure user from useAuth
 
   const { user } = React.useContext(AuthContext)
-  console.log('User on render', user)
 
-   console.log( "Hello world", user);
    // If user is not logged in, redirect to login page or show a message
    if (!user) {
      return (
