@@ -23,8 +23,10 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className="text-3xl font-bold mb-8 text-center">About Us</h1>
       <div className="container mx-auto px-4 py-8">
+        
+        <h1 className="text-3xl font-bold mb-8 text-center ">About Us</h1>
+
         <p className="text-lg text-gray-700 mb-6">
           Welcome to Job Hunter, your ultimate destination for creating
           professional and eye-catching resumes effortlessly. Our platform is
