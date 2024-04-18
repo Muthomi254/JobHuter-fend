@@ -59,7 +59,7 @@ export default function Page() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Login failed. Please try again!',
+        text: 'Login failed.  Please try again!',
       });
       console.error('Login error:', error);
     }
