@@ -1,15 +1,17 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+// export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+  const router = useRouter();
   const [user, setUser] = useState(null);
 
   const register = async (formData) => {
@@ -35,8 +37,15 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
       });
-      setUser(response.data.user);
-      localStorage.setItem('token', response.data.access_token);
+
+
+      if (response.status === 200) {
+        setUser(response.data.access_token); // Update user state with user data
+        localStorage.setItem('token', response.data.access_token);
+        return response.data.user; // Return user data
+      } else {
+        throw new Error('Issue'); // Throw error if user data is missing
+      }
     } catch (error) {
       console.error('Login error:', error);
       throw new Error('Login Failed');
