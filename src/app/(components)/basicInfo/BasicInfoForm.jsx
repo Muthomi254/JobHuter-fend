@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import BasicInfoContext
 import Calender from '../Calender';
- import Swal from 'sweetalert2'; // Import SweetAlert
-
+import Swal from 'sweetalert2'; // Import SweetAlert
+import { useModal } from '../../(context)/modalContext'; // Import useModal hook
 
 export default function BasicInfo() {
-  const { createBasicInfo } = useBasicInfo(); // Access createBasicInfo function from BasicInfoContext
+  const { createBasicInfo, updateBasicInfo, basicInfo } = useBasicInfo(); // Access BasicInfoContext
+  const { isOpen, openModal, closeModal } = useModal(); // Access modal state and functions
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -19,56 +21,77 @@ export default function BasicInfo() {
     image_data: '',
   });
 
+  useEffect(() => {
+    // Prefill the form fields with existing data when in edit mode
+    if (basicInfo) {
+      setFormData(basicInfo);
+    }
+  }, [basicInfo]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
- const handleDateChange = (date) => {
-   // Convert selected date to the correct format
-   const formattedDate = date ? date.toISOString().split('T')[0] : '';
-   setFormData({ ...formData, date_of_birth: formattedDate });
+  const handleDateChange = (date) => {
+    // Convert selected date to the correct format
+    const formattedDate = date ? date.toISOString().split('T')[0] : '';
+    setFormData({ ...formData, date_of_birth: formattedDate });
+  };
 
- };
-
-
- const handleImageChange = (e) => {
-   const file = e.target.files[0];
-   const reader = new FileReader();
-   reader.onloadend = () => {
-     // Convert the image data to base64 format
-     const imageData = reader.result.split(',')[1];
-     setFormData({ ...formData, image_data: imageData }); // Update the image_data field with the base64-encoded image data
-   };
-   reader.readAsDataURL(file); // Read the file as data URL
- };
-
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // Convert the image data to base64 format
+      const imageData = reader.result.split(',')[1];
+      setFormData({ ...formData, image_data: imageData }); // Update the image_data field with the base64-encoded image data
+    };
+    reader.readAsDataURL(file); // Read the file as data URL
+  };
 
  const handleSubmit = async (e) => {
    e.preventDefault();
    try {
-     console.log('Form Data:', formData); // Log formData
-     await createBasicInfo(formData); // Call createBasicInfo function with formData
-     console.log('BasicInfo created successfully!');
-     // Show success notification
-     Swal.fire({
-       icon: 'success',
-       title: 'Success!',
-       text: 'BasicInfo created successfully!',
-     });
+     console.log('Submitting formData:', formData);
+
+     if (basicInfo) {
+       // Update existing basic info
+       const updatedData = {
+         ...basicInfo, // Include existing basic info data
+         ...formData, // Update with new form data
+       };
+       await updateBasicInfo(basicInfo.id, updatedData); // Call updateBasicInfo with updated data
+       Swal.fire({
+         icon: 'success',
+         title: 'Success!',
+         text: 'BasicInfo updated successfully!',
+       });
+     } else {
+       // Create new basic info
+       await createBasicInfo(formData); // Call createBasicInfo with form data
+       Swal.fire({
+         icon: 'success',
+         title: 'Success!',
+         text: 'BasicInfo created successfully!',
+       });
+     }
    } catch (error) {
-     console.error('Error creating BasicInfo:', error);
-     // Show error notification
+     console.error('Error:', error);
      Swal.fire({
        icon: 'error',
        title: 'Error!',
-       text: 'Failed to create BasicInfo',
+       text: 'Failed to save BasicInfo',
      });
    }
  };
 
+
   return (
-    <div className="max-w-md mx-auto pb-5 pt-3 h-screen flex justify-center items-center ">
-      <form onSubmit={handleSubmit}>
+    <div className="max-auto mx-auto pb-5 pt-3 h-screen flex justify-center items-center">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg"
+      >
         <div className="grid gap-6 mb-10  md:grid-cols-2">
           <div>
             <label
@@ -128,8 +151,8 @@ export default function BasicInfo() {
             >
               Date of birth
             </label>
-            <div className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-              <Calender
+            <div>
+               <Calender
                 selected={formData.date_of_birth}
                 onChange={handleDateChange}
               />
@@ -211,12 +234,20 @@ export default function BasicInfo() {
           </p>
         </div>
 
-        <button
-          type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Save
-        </button>
+        <div className="flex justify-between">
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Save
+          </button>
+          <button
+            onClick={closeModal} // Close the modal on button click
+            className="text-gray-500 hover:text-red-700 focus:outline-none focus:text-gray-700"
+          >
+            Close
+          </button>
+        </div>
       </form>
     </div>
   );
