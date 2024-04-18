@@ -1,27 +1,34 @@
 'use client';
 
 // BasicInfoContainer.js
-// BasicInfoContainer.js
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import Modal from '../EditModal'; // Import the Modal component
+import Modal from '../ui-components/EditModal'; // Import the Modal component
 import BasicInfoForm from './BasicInfoForm'; // Import the BasicInfoForm component
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import useBasicInfo hook
-import { AiOutlinePlus, AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlinePlus, AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
+
+import { Button } from 'flowbite-react';
+import CustomModal from '../ui-components/CustomModal';
 
 const BasicInfoContainer = () => {
   const [showForm, setShowForm] = useState(false);
-  const { basicInfo, fetchBasicInfo, fetchBasicInfoById } = useBasicInfo(); // Access basicInfo state and fetchBasicInfo function
+  const { basicInfo, fetchBasicInfo } = useBasicInfo(); // Access basicInfo state and fetchBasicInfo function
 
-  // useEffect(() => {
-  //   fetchBasicInfoById();
-  // }, []);
+  const [open, setOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
     fetchBasicInfo();
   }, []);
 
-  const handleToggleForm = (event) => {
-    event.preventDefault();
+  const handleToggleForm = () => {
     setShowForm(!showForm);
   };
 
@@ -30,6 +37,7 @@ const BasicInfoContainer = () => {
       <h2 className="text-xl font-medium text-gray-900 mb-5">
         Personal Information
       </h2>
+
       {basicInfo ? (
         <div className="bg-white shadow-md rounded-lg p-6">
           {basicInfo.image_data && (
@@ -42,6 +50,25 @@ const BasicInfoContainer = () => {
                 />
               </div>
               <div className="flex items-center">
+                {/* <Button
+                  onClick={handleOpenModal}
+                  className="bg-transparent text-blue-700  hover:text-white-800 text-sm font-semibold py-2 px-4  "
+                >
+                  <AiOutlineEdit className="h-5 w-5 mr-1" />
+                  Edit
+                </Button> */}
+
+                {/* CustomModal with BasicInfoForm  */}
+                {/* <CustomModal
+                  open={open}
+                  title="Basic Info"
+                  size="md"
+                  className="bg-transparent"
+                  onClose={handleCloseModal}
+                >
+                  <BasicInfoForm />
+                </CustomModal> */}
+
                 <Modal
                   buttonContent={
                     <>
@@ -50,7 +77,7 @@ const BasicInfoContainer = () => {
                     </>
                   }
                 >
-                  {' '}
+                  
                   <BasicInfoForm initialData={basicInfo} />
                 </Modal>
               </div>
@@ -69,10 +96,9 @@ const BasicInfoContainer = () => {
             </div>
             <div className="mb-6">
               <p className="text-lg font-semibold mb-2">Date of Birth:</p>
-              <p className="text-gray-800">
-                {new Date(basicInfo.date_of_birth).toLocaleDateString()}
-              </p>
+              <p className="text-gray-800">{basicInfo.date_of_birth}</p>
             </div>
+
             <div className="mb-6">
               <p className="text-lg font-semibold mb-2">Nationality:</p>
               <p className="text-gray-800">{basicInfo.nationality}</p>
@@ -88,18 +114,32 @@ const BasicInfoContainer = () => {
           </div>
         </div>
       ) : (
-        <button
-          onClick={handleToggleForm}
-          className="text-blue-500 hover:text-blue-700 focus:outline-none"
-        >
-          <div className="flex items-center">
-            <AiOutlinePlus className="h-5 w-5 mr-1" />
-            Add Personal Info
-          </div>
-        </button>
+        <>
+          <button
+            onClick={handleToggleForm}
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          >
+            <div className="flex items-center">
+              {showForm ? (
+                <>
+                  <AiOutlineClose className="h-5 w-5 mr-1" />
+                  Close
+                </>
+              ) : (
+                <>
+                  <AiOutlinePlus className="h-5 w-5 mr-1" />
+                  Add Personal Info
+                </>
+              )}
+            </div>
+          </button>
+          {showForm && <BasicInfoForm />}
+        </>
       )}
     </div>
   );
 };
 
 export default BasicInfoContainer;
+
+
