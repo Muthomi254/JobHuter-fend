@@ -2,13 +2,12 @@
 
 // BasicInfoContainer.js
 import { useState, useEffect } from 'react';
-import Modal from '../ui-components/EditModal'; // Import the Modal component
 import BasicInfoForm from './BasicInfoForm'; // Import the BasicInfoForm component
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import useBasicInfo hook
 import { AiOutlinePlus, AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
 
 import { Button } from 'flowbite-react';
-import CustomModal from '../ui-components/CustomModal';
+import EditModal from '../ui-components/EditModal';
 
 const BasicInfoContainer = () => {
   const [showForm, setShowForm] = useState(false);
@@ -50,16 +49,17 @@ const BasicInfoContainer = () => {
                 />
               </div>
               <div className="flex items-center">
-                {/* <Button
+                <Button
                   onClick={handleOpenModal}
-                  className="bg-transparent text-blue-700  hover:text-white-800 text-sm font-semibold py-2 px-4  "
+                  color="light"
+                  className="bg-transparent text-blue-700   font-semibold py-2 px-4  "
                 >
                   <AiOutlineEdit className="h-5 w-5 mr-1" />
                   Edit
-                </Button> */}
+                </Button>
 
-                {/* CustomModal with BasicInfoForm  */}
-                {/* <CustomModal
+                {/* EditModal with BasicInfoForm  */}
+                <EditModal
                   open={open}
                   title="Basic Info"
                   size="md"
@@ -67,19 +67,9 @@ const BasicInfoContainer = () => {
                   onClose={handleCloseModal}
                 >
                   <BasicInfoForm />
-                </CustomModal> */}
+                </EditModal>
 
-                <Modal
-                  buttonContent={
-                    <>
-                      <AiOutlineEdit className="h-5 w-5 mr-1" />
-                      Edit
-                    </>
-                  }
-                >
-                  
-                  <BasicInfoForm initialData={basicInfo} />
-                </Modal>
+                
               </div>
             </div>
           )}
