@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useContext } from 'react';
-import { useAuth } from '../../(context)/authContext';
 import Swal from 'sweetalert2';
 import {useRouter} from 'next/navigation'
 import { AuthContext } from '../../(context)/authContext';
