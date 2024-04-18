@@ -13,7 +13,7 @@ import References from '../(components)/references/References';
 function Page() {
   return (
       <div>
-       <AuthenticatedPage>
+       {/* <AuthenticatedPage> */}
 
         <BasicInfo />
         <Contact />
@@ -24,7 +24,7 @@ function Page() {
         <References />
         <Description />
 
-    </AuthenticatedPage>
+    {/* </AuthenticatedPage> */}
 
       </div>
   );
