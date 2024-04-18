@@ -1,42 +1,48 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useAuth } from '../../(context)/authContext'; // Import the useAuth hook
-import Swal from 'sweetalert2'; // Import SweetAlert
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../(context)/authContext';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation'; // Import useRouter from Next.js for navigation
 
 export default function Page() {
-  const { register } = useAuth();
+  const authContext = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
 
-  const isSecurePassword = (password) => {
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const isLongEnough = password.length >= 8;
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword); // Toggle password visibility
+    };
 
-    return (
-      hasUppercase &&
-      hasLowercase &&
-      hasNumber &&
-      hasSpecialChar &&
-      isLongEnough
-    );
-  };
+ const isSecurePassword = (password) => {
+   const hasUppercase = /[A-Z]/.test(password);
+   const hasLowercase = /[a-z]/.test(password);
+   const hasNumber = /\d/.test(password);
+   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+   const isLongEnough = password.length >= 8;
+
+   return (
+     hasUppercase && hasLowercase && hasNumber && hasSpecialChar && isLongEnough
+   );
+ };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Extract email and password from form fields
     const email = document.getElementById('floating_email').value;
     const password = document.getElementById('password').value;
     const confirm_password = document.getElementById('confirm_password').value;
 
+    // Validate password confirmation
     if (password !== confirm_password) {
       setError('Password confirmation does not match');
       return;
     }
 
+    // Validate password strength
     if (!isSecurePassword(password)) {
       setError(
         'Password must contain at least 8 characters including uppercase, lowercase, number, and special character.'
@@ -45,16 +51,18 @@ export default function Page() {
     }
 
     try {
-      await register({ email, password, confirm_password });
+      // Attempt to register user using AuthContext
+      await authContext.register({ email, password, confirm_password });
       // If registration succeeds, show success message and redirect to login page
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful',
         text: 'You have successfully registered!',
       }).then(() => {
-        window.location.href = '/login';
+        router.push('/login'); // Use useRouter to navigate to login page
       });
     } catch (error) {
+      // Handle registration error
       Swal.fire({
         icon: 'error',
         title: 'Registration Failed',
@@ -63,6 +71,9 @@ export default function Page() {
       setError('Registration failed');
     }
   };
+
+
+
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -78,7 +89,7 @@ export default function Page() {
             type="email"
             name="email"
             id="floating_email"
-            className="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="email@example.com"
             required
           />
@@ -95,7 +106,7 @@ export default function Page() {
               type={showPassword ? 'text' : 'password'}
               id="password"
               name="password"
-              className="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="•••••••••"
               required
             />
@@ -156,7 +167,7 @@ export default function Page() {
             type="password"
             id="confirm_password"
             name="confirm_password"
-            className="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="•••••••••"
             required
           />
