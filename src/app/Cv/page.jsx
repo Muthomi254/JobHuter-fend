@@ -1,4 +1,6 @@
+// Page.js
 import React from 'react';
+import AuthenticatedPage from '../(context)/AuthenticatedPage'; // Import the AuthenticatedPage component
 import BasicInfo from '../(components)/basicInfo/BasicInfo';
 import Contact from '../(components)/contact/Contact';
 import Description from '../(components)/profile/Description';
@@ -8,26 +10,24 @@ import Experience from '../(components)/experience/Experience';
 import Skills from '../(components)/skills/Skills';
 import References from '../(components)/references/References';
 
-function page() {
+function Page() {
   return (
-    <div>
-      <BasicInfo />
+      <div>
+       <AuthenticatedPage>
 
-      <Contact />
+        <BasicInfo />
+        <Contact />
+        <Language />
+        <Education />
+        <Experience />
+        <Skills />
+        <References />
+        <Description />
 
-      <Description />
+    </AuthenticatedPage>
 
-      <Language />
-
-      <Education />
-
-      <Experience />
-
-      <Skills />
-
-      <References />
-    </div>
+      </div>
   );
 }
 
-export default page;
+export default Page;
