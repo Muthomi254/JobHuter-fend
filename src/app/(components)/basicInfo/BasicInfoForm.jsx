@@ -4,11 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import BasicInfoContext
 import Calender from '../Calender';
 import Swal from 'sweetalert2'; // Import SweetAlert
-import { useModal } from '../../(context)/modalContext'; // Import useModal hook
 
 export default function BasicInfo() {
   const { createBasicInfo, updateBasicInfo, basicInfo } = useBasicInfo(); // Access BasicInfoContext
-  const { isOpen, openModal, closeModal } = useModal(); // Access modal state and functions
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -267,12 +265,7 @@ const handleSubmit = async () => {
           >
             Save
           </button>
-          <button
-            onClick={closeModal} // Close the modal on button click
-            className="text-gray-500 hover:text-red-700 focus:outline-none focus:text-gray-700"
-          >
-            Close
-          </button>
+        
         </div>
       </form>
     </div>
