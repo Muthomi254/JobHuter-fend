@@ -29,25 +29,32 @@ export const BasicInfoProvider = ({ children }) => {
     }
   };
 
-  const updateBasicInfo = async (basicInfoId, formData) => {
-    try {
-      const response = await axios.patch(
-        `${BASE_URL}/basic-info/${basicInfoId}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-      console.log('BasicInfo updated successfully:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating BasicInfo:', error);
-      throw new Error('Failed to update BasicInfo');
-    }
-  };
+ 
+
+ const updateBasicInfo = async (formData) => {
+   try {
+     const response = await axios.patch(
+       `${BASE_URL}/basic-info`, // Update the endpoint to /basic-info
+       formData,
+       {
+         headers: {
+           'Content-Type': 'application/json',
+               'Accept':'application/json',
+           Authorization: `Bearer ${localStorage.getItem('token')}`,
+         },
+       }
+     );
+     console.log('BasicInfo updated successfully:', response.data);
+     return response.data;
+   } catch (error) {
+     console.error('Error updating BasicInfo:', error);
+     throw new Error('Failed to update BasicInfo');
+   }
+ };
+
+
+
+
 
  
 
@@ -58,10 +65,27 @@ export const BasicInfoProvider = ({ children }) => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      console.log('Fetched BasicInfo:', response.data);
       setBasicInfo(response.data); // Update the basicInfo state with the fetched data
     } catch (error) {
       console.error('Error fetching BasicInfo:', error);
+      throw new Error('Failed to fetch BasicInfo');
+    }
+  };
+
+  const fetchBasicInfoById = async (basicInfoId) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/basic-info/${basicInfoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      console.log('Fetched BasicInfo by ID:', response.data);
+      setBasicInfo(response.data); // Update the basicInfo state with the fetched data
+    } catch (error) {
+      console.error('Error fetching BasicInfo by ID:', error);
       throw new Error('Failed to fetch BasicInfo');
     }
   };
@@ -71,6 +95,7 @@ export const BasicInfoProvider = ({ children }) => {
     createBasicInfo,
     updateBasicInfo,
     fetchBasicInfo,
+    fetchBasicInfoById,
   };
 
   return (
