@@ -1,81 +1,81 @@
 
 "use client"
 
-import React, { useState } from 'react';
-import { useAuth } from '../../(context)/authContext'; // Import the useAuth hook from the authentication context
-import Swal from 'sweetalert2'; // Import SweetAlert
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../(context)/authContext';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation'; // Correct import for useRouter from Next.js
 
 export default function Page() {
-  const { forgotPassword } = useAuth(); // Destructure forgotPassword function from the authentication context
+  const authContext = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: '',
     new_password: '',
     confirm_password: '',
   });
-  const [showPassword, setShowPassword] = useState(false); // State to track password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter(); // Initialize useRouter hook
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword); // Toggle password visibility
+    };
+
+    const isSecurePassword = (password) => {
+      const hasUppercase = /[A-Z]/.test(password);
+      const hasLowercase = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      const isLongEnough = password.length >= 8;
+
+      return (
+        hasUppercase &&
+        hasLowercase &&
+        hasNumber &&
+        hasSpecialChar &&
+        isLongEnough
+      );
+    };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
-   e.preventDefault();
-   const { new_password, confirm_password } = formData;
-   if (new_password !== confirm_password) {
-     Swal.fire({
-       icon: 'error',
-       title: 'Passwords do not match',
-     });
-     return;
-   }
-   if (!isSecurePassword(new_password)) {
-     Swal.fire({
-       icon: 'error',
-       title:
-         'Password does not meet security requirements Password must contain at least 8 characters including uppercase, lowercase, number, and special character',
-     });
-     return;
-   }
-   try {
-     await forgotPassword(formData); // Call forgotPassword function on form submission
-     // Handle success or navigate to a success page
-     Swal.fire({
-       icon: 'success',
-       title: 'Password reset successful!',
-     }).then(() => {
-       // Redirect to the login page
-       window.location.href = '/login';
-     });
-   } catch (error) {
-     console.error('Forgot password error:', error); // Handle forgot password error
-     Swal.fire({
-       icon: 'error',
-       title: 'Password reset failed',
-       text: error.message,
-     });
-   }
- };
-
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Toggle password visibility
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { new_password, confirm_password } = formData;
+    if (new_password !== confirm_password) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Passwords do not match',
+      });
+      return;
+    }
+    if (!isSecurePassword(new_password)) {
+      Swal.fire({
+        icon: 'error',
+        title:
+          'Password does not meet security requirements Password must contain at least 8 characters including uppercase, lowercase, number, and special character',
+      });
+      return;
+    }
+    try {
+      await authContext.forgotPassword(formData); // Call forgotPassword function from AuthContext
+      Swal.fire({
+        icon: 'success',
+        title: 'Password reset successful!',
+      }).then(() => {
+        router.push('/login'); // Use useRouter to navigate to login page
+      });
+    } catch (error) {
+      console.error('Forgot password error:', error); // Handle forgot password error
+      Swal.fire({
+        icon: 'error',
+        title: 'Password reset failed',
+        text: error.message,
+      });
+    }
   };
 
-  const isSecurePassword = (password) => {
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const isLongEnough = password.length >= 8;
-
-    return (
-      hasUppercase &&
-      hasLowercase &&
-      hasNumber &&
-      hasSpecialChar &&
-      isLongEnough
-    );
-  };
 
   return (
     <div className="flex justify-center items-center h-screen">
