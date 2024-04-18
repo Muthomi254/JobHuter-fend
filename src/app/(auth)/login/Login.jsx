@@ -1,17 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useAuth } from '../../(context)/authContext';
 import Swal from 'sweetalert2';
+import {useRouter} from 'next/navigation'
+import { AuthContext } from '../../(context)/authContext';
 
 export default function Page() {
-  const { login } = useAuth();
+ const {user, login} = useContext(AuthContext)
+ 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
 
+  const router = useRouter()
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -40,7 +44,7 @@ export default function Page() {
     }
 
     try {
-      await login({ email, password });
+      const authenticate = await login({ email, password });
       // Redirect to /Cv on successful login
       Swal.fire({
         icon: 'success',
@@ -48,9 +52,8 @@ export default function Page() {
         text: 'Login successful!',
         timer: 2000,
         showConfirmButton: false,
-      }).then(() => {
-        window.location.href = '/Cv';
       });
+      router.push('/Cv')
     } catch (error) {
       // Handle login error
       Swal.fire({
