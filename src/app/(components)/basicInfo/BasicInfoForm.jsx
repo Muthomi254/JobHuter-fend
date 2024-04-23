@@ -37,19 +37,27 @@ export default function BasicInfo() {
     setFormData({ ...formData, date_of_birth: formattedDate });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
 
   reader.onloadend = () => {
-    // Convert the image data to base64 format
-    const imageData = reader.result.split(',')[1];
-    setFormData({ ...formData, image_data: imageData }); // Update the image_data field with the base64-encoded data
+    // Check if the result is available
+    if (reader.result) {
+      // Split the result by comma to get the base64-encoded string
+      const base64data = reader.result.split(',')[1];
+      setFormData({ ...formData, image_data: base64data }); // Update the image_data field with the base64-encoded data
+    } else {
+      console.error('No data was read from the file.');
+    }
   };
 
-
+  if (file) {
     reader.readAsDataURL(file); // Read the file as data URL
-  };
+  }
+};
+
+
 
 const handleSubmit = async () => {
   try {
