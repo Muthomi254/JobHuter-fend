@@ -1,12 +1,31 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useEducationContext } from '../../(context)/educationContext'; // Import the context
 
-function EducationForm() {
+function EducationForm({ existingData, onSave }) {
+  const { register, handleSubmit, setValue } = useForm();
+  const { addEducationEntry, updateEducationEntry } = useEducationContext(); // Use the context
+
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  // UseEffect to set form values if existing data is passed
+  useEffect(() => {
+    if (existingData) {
+      setValue('course_title', existingData.course_title);
+      setValue('institution', existingData.institution);
+      setValue('city', existingData.city);
+      setValue('country', existingData.country);
+      setValue('start_date', existingData.start_date);
+      setValue('end_date', existingData.end_date);
+      setValue('description', existingData.description);
+      setStartDate(existingData.start_date);
+      setEndDate(existingData.end_date);
+    }
+  }, [existingData, setValue]);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -16,29 +35,32 @@ function EducationForm() {
     setEndDate(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmitForm = (data) => {
+    const formData = {
+      course_title: data.course_title,
+      institution: data.institution,
+      city: data.city,
+      country: data.country,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      description: data.description,
+    };
 
-    // Check if start date is greater than or equal to end date
-    if (new Date(startDate) >= new Date(endDate)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Start date must be before end date!',
-      });
-      return;
+    if (existingData) {
+      updateEducationEntry(existingData.id, formData); // Call update function from context
+    } else {
+      addEducationEntry(formData); // Call add function from context
     }
-
-    // Proceed with form submission
-    // Add your submission logic here
+    onSave(formData); // Call onSave function passed from parent component
   };
 
   return (
-    <div className="max-w-md mx-auto h-screen flex justify-center items-center ">
-      <form className="max-w-md w-full px-4" onSubmit={handleSubmit}>
-        {' '}
-        {/* <h2 className="text-xl font-medium text-gray-900 mb-5">Education</h2> */}
-        <div class="grid gap-6 mb-10  md:grid-cols-2">
+    <div className="max-w-md mx-auto h-screen flex justify-center items-center">
+      <form
+        className="max-w-md w-full px-4"
+        onSubmit={handleSubmit(onSubmitForm)}
+      >
+        <div className="grid gap-6 mb-10 md:grid-cols-2">
           <div>
             <label
               htmlFor="course_title"
@@ -49,6 +71,7 @@ function EducationForm() {
             <input
               type="text"
               id="course_title"
+              {...register('course_title')}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Course Title"
               required
@@ -64,6 +87,7 @@ function EducationForm() {
             <input
               type="text"
               id="institution"
+              {...register('institution')}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Institution"
               required
@@ -79,6 +103,7 @@ function EducationForm() {
             <input
               type="text"
               id="city"
+              {...register('city')}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="City"
               required
@@ -94,6 +119,7 @@ function EducationForm() {
             <input
               type="text"
               id="country"
+              {...register('country')}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Country"
               required
@@ -109,6 +135,7 @@ function EducationForm() {
             <input
               type="date"
               id="start_date"
+              {...register('start_date')}
               value={startDate}
               onChange={handleStartDateChange}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -125,13 +152,14 @@ function EducationForm() {
             <input
               type="date"
               id="end_date"
+              {...register('end_date')}
               value={endDate}
               onChange={handleEndDateChange}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               required
             />
           </div>
-           <div className="col-span-2">
+          <div className="col-span-2">
             <label
               htmlFor="description"
               className="block mb-2 text-sm font-medium text-gray-900"
@@ -140,19 +168,19 @@ function EducationForm() {
             </label>
             <textarea
               id="description"
+              {...register('description')}
               className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 description-textarea"
               placeholder="Description"
               rows="4"
               required
             ></textarea>
           </div>
-        
         </div>
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          Save
+          {existingData ? 'Update' : 'Save'}
         </button>
       </form>
     </div>
