@@ -48,7 +48,6 @@ const Education = () => {
   return (
     <div className="max-w-md mx-auto pb-5 pt-5 ">
       <h2 className="text-xl font-medium text-gray-900 mb-5">Education</h2>
-
       {!showForm && (
         <button
           onClick={handleAddEducation}
@@ -62,20 +61,60 @@ const Education = () => {
       )}
 
       {educationEntries.map((education) => (
-        <div key={education.id} className="mb-4">
-          <p>{education.course_title}</p>
-          <p>{education.institution}</p>
-          {/* Add other education details here */}
+        <div
+          key={education.id}
+          className="mb-8 border border-gray-200 p-6 rounded-lg shadow-md"
+        >
+         
           <div>
-            <button onClick={() => handleEditEducation(education)}>
-              <AiOutlineEdit /> Edit
+            <p className="font-semibold text-xl">{education.course_title}</p>
+            <p className="text-gray-600">
+              <span className="font-semibold">Institution: </span>
+              {education.institution}
+            </p>
+            <p className="text-gray-600">
+              <span className="font-semibold">Location: </span>
+              {education.city}, {education.country}
+            </p>
+            <p className="text-gray-600">
+              <span className="font-semibold">Start Date: </span>
+              {new Date(education.start_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+            <p className="text-gray-600">
+              <span className="font-semibold">End Date: </span>
+              {new Date(education.end_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+            <p className="text-sm text-gray-700 mt-4">
+              <span className="font-semibold">Description: </span>
+              {education.description}
+            </p>
+          </div>
+          <div className="text-right">
+            <button
+              onClick={() => handleEditEducation(education)}
+              className="text-blue-700 hover:text-green-600 focus:outline-none p-2 "
+            >
+              <AiOutlineEdit className="h-5 w-5 mr-1" /> Edit
             </button>
-            <button onClick={() => handleDeleteEducation(education.id)}>
-              <AiOutlineDelete /> Delete
+            <button
+              onClick={() => handleDeleteEducation(education.id)}
+              className="ml-2 text-red-500 hover:text-red-600 focus:outline-none"
+            >
+              <AiOutlineDelete className="h-5 w-5 mr-1" />
+              Delete
             </button>
           </div>
         </div>
       ))}
+
       {showForm && (
         <div>
           <button
