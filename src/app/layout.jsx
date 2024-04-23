@@ -7,6 +7,8 @@ import NavBar from './(components)/NavBar';
 import Footer from './(components)/Footer';
 import { AuthProvider } from './(context)/authContext';
 import { BasicInfoProvider } from './(context)/basicInfoContext';
+import { EducationProvider } from './(context)/educationContext';
+
  
 export const metadata = {
   title: 'Create Next App',
@@ -21,13 +23,15 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <AuthProvider>
-            <BasicInfoProvider>
+          <BasicInfoProvider>
+            <EducationProvider>
               <NavBar />
 
               {children}
 
               <Footer />
-            </BasicInfoProvider>
+            </EducationProvider>
+          </BasicInfoProvider>
         </AuthProvider>
       </body>
     </html>
