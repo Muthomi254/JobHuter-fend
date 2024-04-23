@@ -9,9 +9,16 @@ import {
   AiOutlineClose,
 } from 'react-icons/ai';
 import EducationForm from './EducationForm';
+import { useEducationContext } from '../../(context)/educationContext'; // Import the context
 
 const Education = () => {
-  const [educations, setEducations] = useState([]);
+  const {
+    educationEntries,
+    addEducationEntry,
+    updateEducationEntry,
+    deleteEducationEntry,
+  } = useEducationContext(); // Use the context
+
   const [showForm, setShowForm] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
 
@@ -26,17 +33,14 @@ const Education = () => {
   };
 
   const handleDeleteEducation = (id) => {
-    setEducations(educations.filter((edu) => edu.id !== id));
+    deleteEducationEntry(id); // Call delete function from context
   };
 
-  const handleSaveEducation = (education) => {
+  const handleSaveEducation = (formData) => {
     if (selectedEducation) {
-      const updatedEducations = educations.map((edu) =>
-        edu.id === selectedEducation.id ? education : edu
-      );
-      setEducations(updatedEducations);
+      updateEducationEntry(selectedEducation.id, formData); // Call update function from context
     } else {
-      setEducations([...educations, education]);
+      addEducationEntry(formData); // Call add function from context
     }
     setShowForm(false);
   };
@@ -57,7 +61,7 @@ const Education = () => {
         </button>
       )}
 
-      {educations.map((education) => (
+      {educationEntries.map((education) => (
         <div key={education.id} className="mb-4">
           <p>{education.course_title}</p>
           <p>{education.institution}</p>
@@ -83,9 +87,8 @@ const Education = () => {
             </div>
           </button>
           <EducationForm
-            education={selectedEducation}
+            existingData={selectedEducation}
             onSave={handleSaveEducation}
-            onCancel={() => setShowForm(false)}
           />
         </div>
       )}
