@@ -5,11 +5,15 @@ import React, { useState } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
-  AiOutlineEdit,
   AiOutlineClose,
+  AiOutlineEdit,
+  AiFillCaretDown,
+  AiFillCaretUp,
 } from 'react-icons/ai';
 import EducationForm from './EducationForm';
-import { useEducationContext } from '../../(context)/educationContext'; // Import the context
+import { useEducationContext } from '../../(context)/educationContext';
+import EditModal from '../ui-components/EditModal';
+import Swal from 'sweetalert2';
 
 const Education = () => {
   const {
@@ -17,10 +21,11 @@ const Education = () => {
     addEducationEntry,
     updateEducationEntry,
     deleteEducationEntry,
-  } = useEducationContext(); // Use the context
+  } = useEducationContext();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const handleAddEducation = () => {
     setSelectedEducation(null);
@@ -29,29 +34,62 @@ const Education = () => {
 
   const handleEditEducation = (education) => {
     setSelectedEducation(education);
-    setShowForm(true);
+    setOpenEditModal(true);
   };
 
   const handleDeleteEducation = (id) => {
-    deleteEducationEntry(id); // Call delete function from context
+    Swal.fire({
+      title: 'Delete Education Entry?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteEducationEntry(id);
+        Swal.fire(
+          'Deleted!',
+          'Your education entry has been deleted.',
+          'success'
+        );
+        if (selectedEducation && selectedEducation.id === id) {
+          setSelectedEducation(null);
+        }
+      }
+    });
   };
 
   const handleSaveEducation = (formData) => {
     if (selectedEducation) {
-      updateEducationEntry(selectedEducation.id, formData); // Call update function from context
+      updateEducationEntry(selectedEducation.id, formData);
+      Swal.fire(
+        'Updated!',
+        'Your education entry has been updated.',
+        'success'
+      );
     } else {
-      addEducationEntry(formData); // Call add function from context
+      addEducationEntry(formData);
+      Swal.fire('Added!', 'Your education entry has been added.', 'success');
     }
     setShowForm(false);
   };
 
+  const handleToggleDetails = (education) => {
+    if (selectedEducation && selectedEducation.id === education.id) {
+      setSelectedEducation(null);
+    } else {
+      setSelectedEducation(education);
+    }
+  };
+
   return (
-    <div className="max-w-md mx-auto pb-5 pt-5 ">
+    <div className="max-w-md mx-auto pb-5 pt-5">
       <h2 className="text-xl font-medium text-gray-900 mb-5">Education</h2>
       {!showForm && (
         <button
           onClick={handleAddEducation}
-          className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          className="text-blue-500 hover:text-blue-700 focus:outline-none mb-4"
         >
           <div className="flex items-center">
             <AiOutlinePlus className="h-5 w-5 mr-1" />
@@ -60,60 +98,75 @@ const Education = () => {
         </button>
       )}
 
-      {educationEntries.map((education) => (
-        <div
-          key={education.id}
-          className="mb-8 border border-gray-200 p-6 rounded-lg shadow-md"
-        >
-         
-          <div>
-            <p className="font-semibold text-xl">{education.course_title}</p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Institution: </span>
-              {education.institution}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Location: </span>
-              {education.city}, {education.country}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Start Date: </span>
-              {new Date(education.start_date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">End Date: </span>
-              {new Date(education.end_date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-            <p className="text-sm text-gray-700 mt-4">
-              <span className="font-semibold">Description: </span>
-              {education.description}
-            </p>
-          </div>
-          <div className="text-right">
-            <button
-              onClick={() => handleEditEducation(education)}
-              className="text-blue-700 hover:text-green-600 focus:outline-none p-2 "
+      <ul className="mt-4">
+        {educationEntries.map((education) => (
+          <li key={education.id} className="mb-8">
+            <div
+              className="cursor-pointer flex justify-between items-center"
+              onClick={() => handleToggleDetails(education)}
             >
-              <AiOutlineEdit className="h-5 w-5 mr-1" /> Edit
-            </button>
-            <button
-              onClick={() => handleDeleteEducation(education.id)}
-              className="ml-2 text-red-500 hover:text-red-600 focus:outline-none"
-            >
-              <AiOutlineDelete className="h-5 w-5 mr-1" />
-              Delete
-            </button>
-          </div>
-        </div>
-      ))}
+              <p className="font-semibold text-blue-500 text-md">
+                {education.course_title}
+              </p>
+              {selectedEducation && selectedEducation.id === education.id ? (
+                <AiFillCaretUp className="h-5 w-5 text-blue-500" />
+              ) : (
+                <AiFillCaretDown className="h-5 w-5 text-blue-500" />
+              )}
+            </div>
+            {selectedEducation && selectedEducation.id === education.id && (
+              <div className="border border-gray-200 p-6 rounded-lg shadow-md mt-4 ">
+                <p className="text-gray-600">
+                  <span className="font-semibold">Course:</span>{' '}
+                  {education.course_title}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Institution:</span>{' '}
+                  {education.institution}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Location:</span>{' '}
+                  {education.city}, {education.country}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Start Date:</span>{' '}
+                  {new Date(education.start_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">End Date:</span>{' '}
+                  {new Date(education.end_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+                <p className="text-sm text-gray-700 mt-4">
+                  <span className="font-semibold">Description:</span>{' '}
+                  {education.description}
+                </p>
+                <div className="text-right mt-4">
+                  <button
+                    onClick={() => handleEditEducation(education)}
+                    className="text-blue-700 hover:text-green-600 focus:outline-none mr-2"
+                  >
+                    <AiOutlineEdit className="h-5 w-5 mr-1" /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteEducation(education.id)}
+                    className="text-red-600 hover:text-red-400 focus:outline-none"
+                  >
+                    <AiOutlineDelete className="h-5 w-5 mr-1" /> Delete
+                  </button>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
 
       {showForm && (
         <div>
@@ -131,6 +184,20 @@ const Education = () => {
           />
         </div>
       )}
+
+      <EditModal
+        open={openEditModal}
+        title="Edit Education"
+        size="md"
+        onClose={() => setOpenEditModal(false)}
+      >
+        {selectedEducation && (
+          <EducationForm
+            existingData={selectedEducation}
+            onSave={handleSaveEducation}
+          />
+        )}
+      </EditModal>
     </div>
   );
 };
