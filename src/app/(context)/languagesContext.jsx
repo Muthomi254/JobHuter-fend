@@ -1,77 +1,124 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 
-// Create the LanguagesContext
 const LanguagesContext = createContext();
 
-// Create a custom hook to use the LanguagesContext
 export const useLanguages = () => useContext(LanguagesContext);
 
-// Define the LanguagesProvider component
 export const LanguagesProvider = ({ children }) => {
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(true);
+    const [LanguageLevels, setLanguageLevels] = useState([]);
 
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
-  useEffect(() => {
-    fetchLanguages();
-  }, []); // Fetch languages when component mounts
-
-  // Fetch all languages
   const fetchLanguages = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/languages`);
-      setLanguages(response.data);
+      const response = await fetch(`${BASE_URL}/languages`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch languages');
+      }
+      const data = await response.json();
+      setLanguages(data);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching languages:', error);
+      console.error('Fetch Languages Error:', error.message);
     }
   };
 
-  // Add a new language
+  const fetchLanguageLevels = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/language-levels`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch language levels');
+      }
+      const data = await response.json();
+      setLanguageLevels(data);
+    } catch (error) {
+      console.error('Fetch Language Levels Error:', error.message);
+    }
+  };
+
+
   const addLanguage = async (languageData) => {
     try {
-      await axios.post(`${BASE_URL}/languages`, languageData);
-      fetchLanguages(); // Refresh languages after adding
+      const response = await fetch(`${BASE_URL}/languages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(languageData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add language');
+      }
+      fetchLanguages();
     } catch (error) {
-      console.error('Error adding language:', error);
+      console.error('Add Language Error:', error.message);
     }
   };
 
-  // Update a language
   const updateLanguage = async (languageId, languageData) => {
     try {
-      await axios.put(`${BASE_URL}/languages/${languageId}`, languageData);
-      fetchLanguages(); // Refresh languages after updating
+      const response = await fetch(`${BASE_URL}/languages/${languageId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(languageData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update language');
+      }
+      fetchLanguages();
     } catch (error) {
-      console.error('Error updating language:', error);
+      console.error('Update Language Error:', error.message);
     }
   };
 
-  // Delete a language
   const deleteLanguage = async (languageId) => {
     try {
-      await axios.delete(`${BASE_URL}/languages/${languageId}`);
-      fetchLanguages(); // Refresh languages after deleting
+      const response = await fetch(`${BASE_URL}/languages/${languageId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete language');
+      }
+      fetchLanguages();
     } catch (error) {
-      console.error('Error deleting language:', error);
+      console.error('Delete Language Error:', error.message);
     }
+  };
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+   useEffect(() => {
+     fetchLanguageLevels();
+   }, []);
+
+  const contextValue = {
+    languages,
+    LanguageLevels,
+    loading,
+    addLanguage,
+    updateLanguage,
+    deleteLanguage,
   };
 
   return (
-    <LanguagesContext.Provider
-      value={{
-        languages,
-        loading,
-        addLanguage,
-        updateLanguage,
-        deleteLanguage,
-      }}
-    >
+    <LanguagesContext.Provider value={contextValue}>
       {children}
     </LanguagesContext.Provider>
   );
