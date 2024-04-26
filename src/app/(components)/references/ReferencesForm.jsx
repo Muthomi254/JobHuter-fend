@@ -1,37 +1,81 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useReferenceContext } from '../../(context)/referenceContext'; // Import the context
+import Swal from 'sweetalert2'; // Import SweetAlert
 
-const ReferenceForm = ({ reference, onSave, onCancel }) => {
-  const [name, setName] = useState(reference ? reference.name : '');
-  const [jobTitle, setJobTitle] = useState(
-    reference ? reference.job_title : ''
-  );
-  const [organization, setOrganization] = useState(
-    reference ? reference.organization : ''
-  );
-  const [email, setEmail] = useState(reference ? reference.email : '');
-  const [phone, setPhone] = useState(reference ? reference.phone : '');
+function ReferenceForm({ existingData, onSave }) {
+  const { register, handleSubmit, reset } = useForm();
+  const { addReferenceEntry, updateReferenceEntry } = useReferenceContext(); // Use the context
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newReference = {
-      id: reference ? reference.id : null,
-      name,
-      job_title: jobTitle,
-      organization,
-      email,
-      phone,
-    };
-    onSave(newReference);
+  // Initialize state for form data
+  const [formData, setFormData] = useState({
+    name: '',
+    job_title: '',
+    organization: '',
+    email: '',
+    phone: '',
+  });
+
+  useEffect(() => {
+    // If existingData exists, populate the form fields with its values
+    if (existingData) {
+      reset(existingData);
+      setFormData(existingData);
+    }
+  }, [existingData, reset]);
+
+  const onSubmitForm = (data) => {
+    // Update form data state
+    setFormData(data);
+
+    if (existingData) {
+      updateReferenceEntry(existingData.id, data)
+        .then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Reference Updated',
+            text: 'Reference has been successfully updated!',
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `Error updating reference: ${error.message}`,
+          });
+        });
+    } else {
+      addReferenceEntry(data)
+        .then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Reference Added',
+            text: 'Reference has been successfully added!',
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `Error adding reference: ${error.message}`,
+          });
+        });
+    }
+
+    onSave(data); // Call onSave function passed from parent component
   };
 
   return (
     <div className="max-w-md mx-auto pb-10 pt-5">
       <h2 className="text-xl font-medium text-gray-900 mb-5">
-        {reference ? 'Edit Reference' : 'Add Reference'}
+        {existingData ? 'Edit Reference' : 'Add Reference'}
       </h2>
-      <form onSubmit={handleSubmit} className="max-w-md w-full px-4">
+      <form
+        onSubmit={handleSubmit(onSubmitForm)}
+        className="max-w-md w-full px-4"
+      >
         <div className="grid gap-6 mb-10 md:grid-cols-2">
           <div>
             <label
@@ -43,30 +87,37 @@ const ReferenceForm = ({ reference, onSave, onCancel }) => {
             <input
               type="text"
               id="name"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              {...register('name')}
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
           </div>
+          {/* Repeat similar input fields for other form fields */}
+          {/* Job Title */}
           <div>
             <label
-              htmlFor="job_title"
+              htmlFor="jobTitle"
               className="block mb-2 text-sm font-medium text-gray-900"
             >
               Job Title
             </label>
             <input
               type="text"
-              id="job_title"
-              placeholder="Software Engineer"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
+              id="jobTitle"
+              {...register('jobTitle')}
+              value={formData.job_title}
+              onChange={(e) =>
+                setFormData({ ...formData, job_title: e.target.value })
+              }
               required
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
           </div>
+          {/* Organization */}
           <div>
             <label
               htmlFor="organization"
@@ -77,13 +128,16 @@ const ReferenceForm = ({ reference, onSave, onCancel }) => {
             <input
               type="text"
               id="organization"
-              placeholder="John Doe Inc"
-              value={organization}
-              onChange={(e) => setOrganization(e.target.value)}
+              {...register('organization')}
+              value={formData.organization}
+              onChange={(e) =>
+                setFormData({ ...formData, organization: e.target.value })
+              }
               required
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
           </div>
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -94,13 +148,16 @@ const ReferenceForm = ({ reference, onSave, onCancel }) => {
             <input
               type="email"
               id="email"
-              placeholder="email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register('email')}
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
           </div>
+          {/* Phone */}
           <div>
             <label
               htmlFor="phone"
@@ -111,9 +168,11 @@ const ReferenceForm = ({ reference, onSave, onCancel }) => {
             <input
               type="tel"
               id="phone"
-              placeholder="3536877686"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              {...register('phone')}
+              value={formData.phone}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
               required
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
@@ -124,12 +183,12 @@ const ReferenceForm = ({ reference, onSave, onCancel }) => {
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
           >
-            Save
+            {existingData ? 'Update' : 'Save'}
           </button>
         </div>
       </form>
     </div>
   );
-};
+}
 
 export default ReferenceForm;
