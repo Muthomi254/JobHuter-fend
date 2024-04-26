@@ -36,8 +36,7 @@ export const EducationProvider = ({ children }) => {
   const addEducationEntry = async (formData) => {
     try {
       const token = localStorage.getItem('token');
-      console.log('Authorization Token:', token);
-      console.log('Form Data:', formData); // Log form data here
+      
       const response = await fetch(`${BASE_URL}/education`, {
         method: 'POST',
         headers: {
