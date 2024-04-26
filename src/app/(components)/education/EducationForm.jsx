@@ -46,12 +46,38 @@ function EducationForm({ existingData, onSave }) {
       description: data.description,
     };
 
+    if (startDate > endDate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Date Range',
+        text: 'End Date should be greater than Start Date',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
     if (existingData) {
       updateEducationEntry(existingData.id, formData); // Call update function from context
+      Swal.fire({
+        icon: 'success',
+        title: 'Education Entry Updated',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
+      });
     } else {
       addEducationEntry(formData); // Call add function from context
+      Swal.fire({
+        icon: 'success',
+        title: 'Education Entry Added',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
+      });
     }
+
     onSave(formData); // Call onSave function passed from parent component
+    setStartDate('');
+    setEndDate('');
   };
 
   return (
