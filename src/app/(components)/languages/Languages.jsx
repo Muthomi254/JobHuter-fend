@@ -1,7 +1,6 @@
 'use client';
 
-//The language form and language page are sending data seperately leading to double entry
-
+//These are the imports
 
 import React, { useState } from 'react';
 import {
@@ -18,12 +17,7 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Language = () => {
-  const {
-    languages,
-    addLanguageEntry,
-    updateLanguageEntry,
-    deleteLanguage,
-  } = useLanguages();
+  const { languages, deleteLanguage } = useLanguages();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
@@ -33,11 +27,11 @@ const Language = () => {
     setSelectedLanguage(null);
     setShowForm(true);
   };
+   const handleEditLanguage = (language) => {
+     setSelectedLanguage(language);
+     setOpenEditModal(true);
+   };
 
-  const handleEditLanguage = (language) => {
-    setSelectedLanguage(language);
-    setOpenEditModal(true);
-  };
 
   const handleDeleteLanguage = (id) => {
     Swal.fire({
@@ -63,15 +57,6 @@ const Language = () => {
   };
 
   const handleSaveLanguage = (formData) => {
-    if (selectedLanguage) {
-      updateLanguageEntry(selectedLanguage.id, formData);
-      Swal.fire('Updated!', 'Your language entry has been updated.', 'success');
-    } 
-    
-    else {
-      addLanguageEntry(formData);
-      Swal.fire('Added!', 'Your language entry has been added.', 'success');
-    }
     setShowForm(false);
   };
 
@@ -82,6 +67,8 @@ const Language = () => {
       setSelectedLanguage(language);
     }
   };
+
+
 
   return (
     <div className="max-w-md mx-auto pb-5 pt-5">
