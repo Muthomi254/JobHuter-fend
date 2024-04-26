@@ -34,8 +34,7 @@ const BASE_URL =
 
  const addExperienceEntry = async (experienceData) => {
    try {
-     console.log('Token:', localStorage.getItem('token')); // Log the token
-     console.log('Experience Data:', experienceData); // Log the experienceData
+     
      const response = await fetch(`${BASE_URL}/experience`, {
        method: 'POST',
        headers: {
@@ -93,7 +92,7 @@ const BASE_URL =
   useEffect(() => {
     fetchExperiences();
   }, []);
-  
+
   const contextValue = {
     experiences,
     loading,
