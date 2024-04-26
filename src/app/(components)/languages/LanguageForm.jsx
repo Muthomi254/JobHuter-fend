@@ -1,9 +1,63 @@
-import React from 'react';
+'use client';
 
-const LanguageForm = () => {
+//The language form and language page are sending data seperately leading to double entry
+
+import React, { useState, useEffect } from 'react';
+import { useLanguages } from '../../(context)/languagesContext';
+
+const LanguageForm = ({ language: initialLanguage, onSave }) => {
+  const { addLanguage, updateLanguage, LanguageLevels, loading } =
+    useLanguages();
+
+  const [language, setLanguage] = useState({
+    language: '',
+    language_level: '',
+    additional_info: '',
+  });
+
+  useEffect(() => {
+    if (initialLanguage) {
+      setLanguage(initialLanguage);
+    }
+  }, [initialLanguage]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLanguage((prevLanguage) => ({
+      ...prevLanguage,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!language.language || !language.language_level) {
+      alert('Please fill out language and language level');
+      return;
+    }
+  const languageLevelUpperCase = language.language_level.toUpperCase();
+
+    if (initialLanguage) {
+      updateLanguage(initialLanguage.id, {
+        ...language,
+        language_level: languageLevelUpperCase,
+      });
+    } else {
+      addLanguage({ ...language, language_level: languageLevelUpperCase });
+    }
+
+
+    onSave();
+    setLanguage({
+      language: '',
+      language_level: '',
+      additional_info: '',
+    });
+  };
+
   return (
     <div className="max-w-md mx-auto pb-10 h-screen flex justify-center items-center">
-      <form class="max-w-md w-full px-4">
+      <form onSubmit={handleSubmit} className="max-w-md w-full px-4">
         <div>
           <div>
             <label
@@ -15,6 +69,9 @@ const LanguageForm = () => {
             <input
               type="text"
               id="language"
+              name="language"
+              value={language.language}
+              onChange={handleChange}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Language"
               required
@@ -30,40 +87,18 @@ const LanguageForm = () => {
             <select
               id="language_level"
               name="language_level"
-              className="input-style block py-2.5 px-0 w-full text-sm  bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              value={language.language_level}
+              onChange={handleChange}
+              className="input-style block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               required
             >
-              <option
-                value=""
-                disabled
-                selected
-                class="text-gray-100 text-sm font-medium"
-                
-              >
-                  Select Language Level
-                
-              </option>
-              <option value="Novice">Novice</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Fluent">Fluent</option>
-              <option value="Advanced">Advanced</option>
+              <option value="">Select Language Level</option>
+              {Object.values(LanguageLevels).map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <svg
-                className="w-5 h-5 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M7 7l3-3 3 3m0 6l-3 3-3-3"
-                />
-              </svg>
-            </div>
           </div>
         </div>
         <div>
@@ -75,6 +110,9 @@ const LanguageForm = () => {
           </label>
           <textarea
             id="additional_info"
+            name="additional_info"
+            value={language.additional_info}
+            onChange={handleChange}
             className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 description-textarea"
             placeholder="Additional Info"
             rows="4"
