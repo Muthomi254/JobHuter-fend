@@ -1,14 +1,29 @@
-"use client";
+'use client';
+
+//The language form and language page are sending data seperately leading to double entry
+
 
 import React, { useState } from 'react';
-import { AiOutlineDelete, AiOutlinePlus, AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
+import {
+  AiOutlineDelete,
+  AiOutlinePlus,
+  AiOutlineClose,
+  AiOutlineEdit,
+  AiFillCaretDown,
+  AiFillCaretUp,
+} from 'react-icons/ai';
 import LanguageForm from './LanguageForm';
 import { useLanguages } from '../../(context)/languagesContext';
 import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Language = () => {
-  const { languages, addLanguageEntry, updateLanguageEntry, deleteLanguageEntry } = useLanguages();
+  const {
+    languages,
+    addLanguageEntry,
+    updateLanguageEntry,
+    deleteLanguage,
+  } = useLanguages();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
@@ -34,7 +49,7 @@ const Language = () => {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteLanguageEntry(id);
+        deleteLanguage(id);
         Swal.fire(
           'Deleted!',
           'Your language entry has been deleted.',
@@ -50,12 +65,10 @@ const Language = () => {
   const handleSaveLanguage = (formData) => {
     if (selectedLanguage) {
       updateLanguageEntry(selectedLanguage.id, formData);
-      Swal.fire(
-        'Updated!',
-        'Your language entry has been updated.',
-        'success'
-      );
-    } else {
+      Swal.fire('Updated!', 'Your language entry has been updated.', 'success');
+    } 
+    
+    else {
       addLanguageEntry(formData);
       Swal.fire('Added!', 'Your language entry has been added.', 'success');
     }
@@ -95,6 +108,11 @@ const Language = () => {
               <p className="font-semibold text-blue-500 text-md">
                 {language.language}
               </p>
+              {selectedLanguage && selectedLanguage.id === language.id ? (
+                <AiFillCaretUp className="h-5 w-5  text-red-500" />
+              ) : (
+                <AiFillCaretDown className="h-5 w-5  text-blue-500" />
+              )}
             </div>
             {selectedLanguage && selectedLanguage.id === language.id && (
               <div className="border border-gray-200 p-6 rounded-lg shadow-md mt-4 ">
