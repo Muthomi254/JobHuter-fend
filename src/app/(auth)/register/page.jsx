@@ -68,7 +68,7 @@ export default function Page() {
         title: 'Registration Failed',
         text: 'An error occurred while registering. Please try again later.',
       });
-      setError('Registration failed');
+      setError('Registration failed user email already exists');
     }
   };
 
