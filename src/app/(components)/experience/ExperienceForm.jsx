@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { useExperience } from '../../(context)/experienceContext'; // Import the experience context
 
-function ProfessionalExperienceForm({ existingData }) {
+function ProfessionalExperienceForm({ existingData, onSave }) {
   const {
     register,
     handleSubmit,
@@ -46,6 +46,11 @@ function ProfessionalExperienceForm({ existingData }) {
         title: 'Success',
         text: 'Experience entry saved successfully!',
       });
+
+       if (onSave) {
+         onSave();
+       }
+       
     } catch (error) {
       console.error('Error saving experience entry:', error.message);
       // Show error message

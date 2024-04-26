@@ -10,6 +10,8 @@ import { BasicInfoProvider } from './(context)/basicInfoContext';
 import { EducationProvider } from './(context)/educationContext';
 import { LanguagesProvider } from './(context)/languagesContext';
 import { ExperienceProvider } from './(context)/experienceContext';
+import { ReferenceProvider } from './(context)/referenceContext'; // Update the import path
+
 
 
  
@@ -30,9 +32,8 @@ export default function RootLayout({ children }) {
             <EducationProvider>
               <LanguagesProvider>
                 <ExperienceProvider>
-                <NavBar />
-
-                {children}
+                  <NavBar />
+                  <ReferenceProvider>{children}</ReferenceProvider>
                 </ExperienceProvider>
               </LanguagesProvider>
               <Footer />

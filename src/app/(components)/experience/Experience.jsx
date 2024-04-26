@@ -59,30 +59,21 @@ const Experience = () => {
     });
   };
 
-  const handleSaveExperience = async (formData) => {
-    try {
-      if (selectedExperience) {
-        await updateExperienceEntry(selectedExperience.id, formData);
-        Swal.fire(
-          'Updated!',
-          'Your experience entry has been updated.',
-          'success'
-        );
-      } else {
-        await addExperienceEntry(formData);
-        setShowForm(true); // Close the form after successful addition
-        Swal.fire('Added!', 'Your experience entry has been added.', 'success');
-      }
-    } catch (error) {
-      console.error('Error saving experience entry:', error.message);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to save experience entry. Please try again later.',
-      });
-    }
+  const handleSaveExperience = (formData) => {
+    // Placeholder function without context actions
+    console.log('Handle Save Experience:', formData);
+    setShowForm(false); // Close the form
+
+    // Show success message using SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: 'Experience entry saved successfully!',
+    });
   };
 
+
+  
 
   const handleToggleDetails = (experience) => {
     if (selectedExperience && selectedExperience.id === experience.id) {
@@ -115,7 +106,7 @@ const Experience = () => {
               onClick={() => handleToggleDetails(experience)}
             >
               <p className="font-semibold text-blue-500 text-md">
-                {experience.job_title}
+                {experience.employer}
               </p>
               {selectedExperience && selectedExperience.id === experience.id ? (
                 <AiFillCaretUp className="h-5 w-5 text-red-500" />
