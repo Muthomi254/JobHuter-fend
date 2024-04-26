@@ -9,6 +9,8 @@ import { AuthProvider } from './(context)/authContext';
 import { BasicInfoProvider } from './(context)/basicInfoContext';
 import { EducationProvider } from './(context)/educationContext';
 import { LanguagesProvider } from './(context)/languagesContext';
+import { ExperienceProvider } from './(context)/experienceContext';
+
 
  
 export const metadata = {
@@ -27,9 +29,11 @@ export default function RootLayout({ children }) {
           <BasicInfoProvider>
             <EducationProvider>
               <LanguagesProvider>
+                <ExperienceProvider>
                 <NavBar />
 
                 {children}
+                </ExperienceProvider>
               </LanguagesProvider>
               <Footer />
             </EducationProvider>
