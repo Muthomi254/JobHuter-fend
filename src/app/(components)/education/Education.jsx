@@ -16,12 +16,7 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Education = () => {
-  const {
-    educationEntries,
-    addEducationEntry,
-    updateEducationEntry,
-    deleteEducationEntry,
-  } = useEducationContext();
+  const { educationEntries, deleteEducationEntry } = useEducationContext();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
@@ -61,27 +56,17 @@ const Education = () => {
   };
 
   const handleSaveEducation = (formData) => {
-    if (selectedEducation) {
-      updateEducationEntry(selectedEducation.id, formData);
-      Swal.fire(
-        'Updated!',
-        'Your education entry has been updated.',
-        'success'
-      );
-    } else {
-      addEducationEntry(formData);
-      Swal.fire('Added!', 'Your education entry has been added.', 'success');
-    }
+    // Without addEducationEntry and updateEducationEntry, this function becomes a placeholder
+    console.log('Handle Save Education:', formData);
     setShowForm(false);
   };
-
-  const handleToggleDetails = (education) => {
-    if (selectedEducation && selectedEducation.id === education.id) {
-      setSelectedEducation(null);
-    } else {
-      setSelectedEducation(education);
-    }
-  };
+   const handleToggleDetails = (education) => {
+     if (selectedEducation && selectedEducation.id === education.id) {
+       setSelectedEducation(null);
+     } else {
+       setSelectedEducation(education);
+     }
+   };
 
   return (
     <div className="max-w-md mx-auto pb-5 pt-5">
