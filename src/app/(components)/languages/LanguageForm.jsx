@@ -1,9 +1,10 @@
 'use client';
 
-//The language form and language page are sending data seperately leading to double entry
+
 
 import React, { useState, useEffect } from 'react';
 import { useLanguages } from '../../(context)/languagesContext';
+import Swal from 'sweetalert2';
 
 const LanguageForm = ({ language: initialLanguage, onSave }) => {
   const { addLanguage, updateLanguage, LanguageLevels, loading } =
@@ -29,30 +30,51 @@ const LanguageForm = ({ language: initialLanguage, onSave }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!language.language || !language.language_level) {
-      alert('Please fill out language and language level');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please fill out language and language level',
+      });
       return;
     }
-  const languageLevelUpperCase = language.language_level.toUpperCase();
 
-    if (initialLanguage) {
-      updateLanguage(initialLanguage.id, {
-        ...language,
-        language_level: languageLevelUpperCase,
+    const languageLevelUpperCase = language.language_level.toUpperCase();
+
+    try {
+      if (initialLanguage) {
+        await updateLanguage(initialLanguage.id, {
+          ...language,
+          language_level: languageLevelUpperCase,
+        });
+      } else {
+        await addLanguage({
+          ...language,
+          language_level: languageLevelUpperCase,
+        });
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Language entry saved successfully!',
       });
-    } else {
-      addLanguage({ ...language, language_level: languageLevelUpperCase });
+      onSave();
+      setLanguage({
+        language: '',
+        language_level: '',
+        additional_info: '',
+      });
+    } catch (error) {
+      console.error('Error saving language entry:', error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to save language entry. Please try again later.',
+      });
     }
-
-
-    onSave();
-    setLanguage({
-      language: '',
-      language_level: '',
-      additional_info: '',
-    });
   };
 
   return (
