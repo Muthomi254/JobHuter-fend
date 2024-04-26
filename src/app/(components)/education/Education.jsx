@@ -109,7 +109,7 @@ const Education = () => {
                 {education.course_title}
               </p>
               {selectedEducation && selectedEducation.id === education.id ? (
-                <AiFillCaretUp className="h-5 w-5 text-blue-500" />
+                <AiFillCaretUp className="h-5 w-5 text-red-500" />
               ) : (
                 <AiFillCaretDown className="h-5 w-5 text-blue-500" />
               )}
