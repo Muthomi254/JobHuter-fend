@@ -8,6 +8,7 @@ import Footer from './(components)/Footer';
 import { AuthProvider } from './(context)/authContext';
 import { BasicInfoProvider } from './(context)/basicInfoContext';
 import { EducationProvider } from './(context)/educationContext';
+import { LanguagesProvider } from './(context)/languagesContext';
 
  
 export const metadata = {
@@ -25,10 +26,11 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <BasicInfoProvider>
             <EducationProvider>
-              <NavBar />
+              <LanguagesProvider>
+                <NavBar />
 
-              {children}
-
+                {children}
+              </LanguagesProvider>
               <Footer />
             </EducationProvider>
           </BasicInfoProvider>
