@@ -10,26 +10,24 @@ function ReferenceForm({ existingData, onSave }) {
   const { addReferenceEntry, updateReferenceEntry } = useReferenceContext(); // Use the context
 
   // Initialize state for form data
-  const [formData, setFormData] = useState({
-    name: '',
-    job_title: '',
-    organization: '',
-    email: '',
-    phone: '',
-  });
+  const [formData, setFormData] = useState(
+    existingData || {
+      name: '',
+      job_title: '',
+      organization: '',
+      email: '',
+      phone: '',
+    }
+  );
 
   useEffect(() => {
     // If existingData exists, populate the form fields with its values
     if (existingData) {
-      reset(existingData);
       setFormData(existingData);
     }
-  }, [existingData, reset]);
+  }, [existingData]);
 
   const onSubmitForm = (data) => {
-    // Update form data state
-    setFormData(data);
-
     if (existingData) {
       updateReferenceEntry(existingData.id, data)
         .then(() => {
@@ -53,6 +51,14 @@ function ReferenceForm({ existingData, onSave }) {
             icon: 'success',
             title: 'Reference Added',
             text: 'Reference has been successfully added!',
+          });
+          // Clear form fields after successful addition
+          setFormData({
+            name: '',
+            job_title: '',
+            organization: '',
+            email: '',
+            phone: '',
           });
         })
         .catch((error) => {
@@ -100,15 +106,15 @@ function ReferenceForm({ existingData, onSave }) {
           {/* Job Title */}
           <div>
             <label
-              htmlFor="jobTitle"
+              htmlFor="job-title"
               className="block mb-2 text-sm font-medium text-gray-900"
             >
               Job Title
             </label>
             <input
               type="text"
-              id="jobTitle"
-              {...register('jobTitle')}
+              id="job_title"
+              {...register('job_title')}
               value={formData.job_title}
               onChange={(e) =>
                 setFormData({ ...formData, job_title: e.target.value })

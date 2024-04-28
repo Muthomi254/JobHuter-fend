@@ -1,8 +1,7 @@
 "use client";
-//job title is not updating
 //page is not refreshing to display current data
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
