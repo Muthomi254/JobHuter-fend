@@ -1,18 +1,25 @@
 "use client"
 
-import  { useState } from 'react';
-import SkillForm from './SkillsForm';
+import React, { useState } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
   AiOutlineEdit,
   AiOutlineClose,
+  AiFillCaretDown,
+  AiFillCaretUp,
 } from 'react-icons/ai';
+import SkillForm from './SkillsForm'; // Assuming you have a SkillForm component
+import { useSkillContext } from '../../(context)/skillContext';
+import EditModal from '../ui-components/EditModal';
+import Swal from 'sweetalert2';
 
 const Skills = () => {
+  const { skills, deleteSkill } = useSkillContext();
+
   const [showForm, setShowForm] = useState(false);
-  const [skills, setSkills] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState(null);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const handleAddSkill = () => {
     setSelectedSkill(null);
@@ -21,57 +28,106 @@ const Skills = () => {
 
   const handleEditSkill = (skill) => {
     setSelectedSkill(skill);
-    setShowForm(true);
+    setOpenEditModal(true);
   };
 
-  const handleSaveSkill = (skill) => {
-    if (selectedSkill) {
-      const updatedSkills = skills.map((s) =>
-        s.id === selectedSkill.id ? skill : s
-      );
-      setSkills(updatedSkills);
-    } else {
-      setSkills([...skills, skill]);
-    }
-    setShowForm(false);
+  const handleDeleteSkill = (id) => {
+    Swal.fire({
+      title: 'Delete Skill?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteSkill(id);
+        Swal.fire('Deleted!', 'Your skill has been deleted.', 'success');
+        if (selectedSkill && selectedSkill.id === id) {
+          setSelectedSkill(null);
+        }
+      }
+    });
   };
 
-  const handleDeleteSkill = (index) => {
-    const updatedSkills = [...skills];
-    updatedSkills.splice(index, 1);
-    setSkills(updatedSkills);
+  const handleToggleDetails = (skill) => {
+    setSelectedSkill((prevSelectedSkill) => {
+      if (prevSelectedSkill && prevSelectedSkill.id === skill.id) {
+        return null; // Close the details if already open
+      } else {
+        return skill; // Open the details if closed or another skill is clicked
+      }
+    });
   };
 
   return (
-    <div className="max-w-md mx-auto pb-10 pt-5 ">
+    <div className="max-w-md mx-auto pb-5 pt-5">
       <h2 className="text-xl font-medium text-gray-900 mb-5">Skills</h2>
-      {skills.map((skill, index) => (
-        <div
-          key={index}
-          className="flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3"
+      {!showForm && (
+        <button
+          onClick={handleAddSkill}
+          className="text-blue-500 hover:text-blue-700 focus:outline-none mb-4"
         >
-          <div>
-            <p>{skill.skill}</p>
-            <p>{skill.info}</p>
-            <p>Skill Level: {skill.skillLevel}</p>
+          <div className="flex items-center">
+            <AiOutlinePlus className="h-5 w-5 mr-1" />
+            Add Skill
           </div>
-          <div>
-            <button
-              onClick={() => handleEditSkill(skill)}
-              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+        </button>
+      )}
+
+      <ul className="mt-4">
+        {skills.map((skill) => (
+          <li key={skill.id} className="mb-8">
+            <div
+              className="cursor-pointer flex justify-between items-center"
+              onClick={() => handleToggleDetails(skill)} // <-- Call handleToggleDetails on click
             >
-              <AiOutlineEdit />
-            </button>
-            <button
-              onClick={() => handleDeleteSkill(index)}
-              className="text-red-500 hover:text-red-700 focus:outline-none ml-3"
-            >
-              <AiOutlineDelete />
-            </button>
-          </div>
-        </div>
-      ))}
-      {showForm ? (
+              <p className="font-semibold text-blue-500 text-md">
+                {skill.skill}
+              </p>
+              <div>
+                {selectedSkill && selectedSkill.id === skill.id ? (
+                  <AiFillCaretUp className="h-5 w-5 text-blue-500 mr-2" />
+                ) : (
+                  <AiFillCaretDown className="h-5 w-5 text-blue-500 mr-2" />
+                )}
+              </div>
+            </div>
+            {selectedSkill && selectedSkill.id === skill.id && (
+              <div className="border border-gray-200 p-6 rounded-lg shadow-md mt-4">
+                <p className="text-gray-600">
+                  <span className="font-semibold">Skill:</span> {skill.skill}
+                </p>
+
+                <p className="text-gray-600">
+                  <span className="font-semibold">Skill Level:</span>{' '}
+                  {skill.skill_level}
+                </p>
+
+                <p className="text-gray-600">
+                  <span className="font-semibold">Info:</span> {skill.info}
+                </p>
+                <div className="text-right mt-4">
+                  <button
+                    onClick={() => handleEditSkill(skill)}
+                    className="text-blue-700 hover:text-green-600 focus:outline-none mr-2"
+                  >
+                    <AiOutlineEdit className="h-5 w-5 mr-1" /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteSkill(skill.id)}
+                    className="text-red-600 hover:text-red-400 focus:outline-none"
+                  >
+                    <AiOutlineDelete className="h-5 w-5 mr-1" /> Delete
+                  </button>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {showForm && (
         <div>
           <button
             className="text-red-500 hover:text-red-700 focus:outline-none"
@@ -82,22 +138,25 @@ const Skills = () => {
             </div>
           </button>
           <SkillForm
-            skill={selectedSkill}
-            onSave={handleSaveSkill}
-            onCancel={() => setShowForm(false)}
+            existingData={selectedSkill}
+            onSave={() => setShowForm(false)}
           />
         </div>
-      ) : (
-        <button
-          onClick={handleAddSkill}
-          className="text-blue-500 hover:text-blue-700 focus:outline-none"
-        >
-          <div className="flex items-center">
-            <AiOutlinePlus className="h-5 w-5 mr-1" />
-            Add Skill
-          </div>
-        </button>
       )}
+
+      <EditModal
+        open={openEditModal}
+        title="Edit Skill"
+        size="md"
+        onClose={() => setOpenEditModal(false)}
+      >
+        {selectedSkill && (
+          <SkillForm
+            existingData={selectedSkill}
+            onSave={() => setOpenEditModal(false)}
+          />
+        )}
+      </EditModal>
     </div>
   );
 };
