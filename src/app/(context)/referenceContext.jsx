@@ -1,15 +1,15 @@
 'use client';
 
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ReferenceContext = createContext();
 
-export const useReferenceContext = () => {
-  return useContext(ReferenceContext);
-};
+export const useReferenceContext = () => useContext(ReferenceContext);
 
 export const ReferenceProvider = ({ children }) => {
   const [referenceEntries, setReferenceEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
@@ -28,12 +28,15 @@ export const ReferenceProvider = ({ children }) => {
       setReferenceEntries(data);
     } catch (error) {
       console.error('Fetch Reference Entries Error:', error.message);
+    } finally {
+      setLoading(false);
     }
   };
- useEffect(() => {
-   fetchReferenceEntries();
- }, []);
- 
+
+  useEffect(() => {
+    fetchReferenceEntries();
+  }, []);
+
   const addReferenceEntry = async (formData) => {
     try {
       const token = localStorage.getItem('token');
@@ -48,17 +51,16 @@ export const ReferenceProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Failed to add reference entry');
       }
-      const data = await response.json();
-      setReferenceEntries([...referenceEntries, data]);
+      fetchReferenceEntries();
     } catch (error) {
       console.error('Add Reference Entry Error:', error.message);
     }
   };
 
-  const updateReferenceEntry = async (reference_id, formData) => {
+  const updateReferenceEntry = async (referenceId, formData) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${BASE_URL}/references/${reference_id}`, {
+      const response = await fetch(`${BASE_URL}/references/${referenceId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -69,20 +71,16 @@ export const ReferenceProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Failed to update reference entry');
       }
-      const updatedReference = await response.json();
-      const updatedEntries = referenceEntries.map((entry) =>
-        entry.id === id ? updatedReference : entry
-      );
-      setReferenceEntries(updatedEntries);
+      fetchReferenceEntries();
     } catch (error) {
       console.error('Update Reference Entry Error:', error.message);
     }
   };
 
-  const deleteReferenceEntry = async (reference_id) => {
+  const deleteReferenceEntry = async (referenceId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${BASE_URL}/references/${reference_id}`, {
+      const response = await fetch(`${BASE_URL}/references/${referenceId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -91,23 +89,22 @@ export const ReferenceProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Failed to delete reference entry');
       }
-      setReferenceEntries(referenceEntries.filter((entry) => entry.id !== id));
+      fetchReferenceEntries();
     } catch (error) {
       console.error('Delete Reference Entry Error:', error.message);
     }
   };
 
- 
+  const contextValue = {
+    referenceEntries,
+    loading,
+    addReferenceEntry,
+    updateReferenceEntry,
+    deleteReferenceEntry,
+  };
 
   return (
-    <ReferenceContext.Provider
-      value={{
-        referenceEntries,
-        addReferenceEntry,
-        updateReferenceEntry,
-        deleteReferenceEntry,
-      }}
-    >
+    <ReferenceContext.Provider value={contextValue}>
       {children}
     </ReferenceContext.Provider>
   );
