@@ -17,8 +17,7 @@ import Swal from 'sweetalert2';
 const Experience = () => {
   const {
     experiences,
-    addExperienceEntry,
-    updateExperienceEntry,
+    fetchExperiences,
     deleteExperienceEntry,
   } = useExperience(); // Update the hook to useExperience
 
