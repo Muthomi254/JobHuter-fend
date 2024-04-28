@@ -11,6 +11,7 @@ import { EducationProvider } from './(context)/educationContext';
 import { LanguagesProvider } from './(context)/languagesContext';
 import { ExperienceProvider } from './(context)/experienceContext';
 import { ReferenceProvider } from './(context)/referenceContext'; // Update the import path
+import { SkillProvider } from './(context)/skillContext'; // Update the import path
 
 
 
@@ -32,8 +33,12 @@ export default function RootLayout({ children }) {
             <EducationProvider>
               <LanguagesProvider>
                 <ExperienceProvider>
-                  <NavBar />
-                  <ReferenceProvider>{children}</ReferenceProvider>
+                  <SkillProvider>
+                    <NavBar />
+                    <ReferenceProvider>
+                      {children}
+                    </ReferenceProvider>
+                  </SkillProvider>
                 </ExperienceProvider>
               </LanguagesProvider>
               <Footer />
