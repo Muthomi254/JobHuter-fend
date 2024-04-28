@@ -1,5 +1,4 @@
 "use client";
-//page is not refreshing to display current data
 
 import React, { useState } from 'react';
 import {
