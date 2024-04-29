@@ -1,5 +1,9 @@
 // contactContext.js
 
+"use client";
+
+// contactContext.js
+
 import React, { createContext, useContext, useState } from 'react';
 
 const ContactContext = createContext();
@@ -9,11 +13,18 @@ export const useContact = () => useContext(ContactContext);
 export const ContactProvider = ({ children }) => {
   const [contacts, setContacts] = useState([]);
 
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+
   // Function to fetch contacts
   const fetchContacts = async () => {
     // Make API request to fetch contacts
     try {
-      const response = await fetch('/api/contacts');
+      const response = await fetch(`${BASE_URL}/contacts`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setContacts(data);
@@ -29,10 +40,11 @@ export const ContactProvider = ({ children }) => {
   const createContact = async (contactData) => {
     // Make API request to create contact
     try {
-      const response = await fetch('/api/contacts', {
+      const response = await fetch(`${BASE_URL}/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(contactData),
       });
@@ -50,10 +62,11 @@ export const ContactProvider = ({ children }) => {
   const updateContact = async (contactId, contactData) => {
     // Make API request to update contact
     try {
-      const response = await fetch(`/api/contacts/${contactId}`, {
+      const response = await fetch(`${BASE_URL}/contacts/${contactId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(contactData),
       });
@@ -67,9 +80,36 @@ export const ContactProvider = ({ children }) => {
     }
   };
 
+  // Function to delete a contact
+  const deleteContact = async (contactId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/contacts/${contactId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete contact');
+      }
+      // Update the state after deletion
+      setContacts((prevContacts) =>
+        prevContacts.filter((contact) => contact.id !== contactId)
+      );
+    } catch (error) {
+      console.error('Delete Contact Error:', error.message);
+    }
+  };
+
   return (
     <ContactContext.Provider
-      value={{ contacts, fetchContacts, createContact, updateContact }}
+      value={{
+        contacts,
+        fetchContacts,
+        createContact,
+        updateContact,
+        deleteContact,
+      }}
     >
       {children}
     </ContactContext.Provider>
