@@ -1,38 +1,156 @@
+// ProfilePage.js
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useProfileContext } from '../../(context)/profileContext';
+import {
+  AiOutlinePlus,
+  AiOutlineClose,
+  AiOutlineEdit,
+  AiOutlineDelete,
+} from 'react-icons/ai';
+import { Button } from 'flowbite-react'; // Import Button component
+import EditModal from '../ui-components/EditModal';
+import DescriptionForm from './DescriptionForm';
+import Swal from 'sweetalert2'; // Import SweetAlert
 
 
-import React from 'react';
+const ProfileContainer = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedProfileId, setSelectedProfileId] = useState(null);
 
-function Description() {
+  const {
+    profiles,
+    fetchProfiles,
+    
+    deleteProfile,
+  } = useProfileContext();
+
+  const handleOpenModal = (profileId) => {
+    setSelectedProfileId(profileId);
+    setOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  const handleToggleForm = () => {
+    setShowForm(!showForm);
+  };
+
+const handleDeleteProfile = async (profileId) => {
+  try {
+    const result = await Swal.fire({
+      title: 'Delete Profile?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    });
+
+    if (result.isConfirmed) {
+      await deleteProfile(profileId);
+      // Refresh profiles after deletion
+      fetchProfiles();
+      // Show success notification for deletion
+      Swal.fire('Deleted!', 'Your profile has been deleted.', 'success');
+    }
+  } catch (error) {
+    console.error('Error deleting profile:', error.message);
+    // Show error notification
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'An error occurred while deleting the profile. Please try again later.',
+    });
+  }
+};
+
+
   return (
-    <div>
-      <div className="max-w-md mx-auto pb-5 h-screen flex justify-center items-center">
-        <form className="max-w-md w-full px-4">
-          <div className="grid gap-6 mb-10 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="message"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                Description
-              </label>
-              <textarea
-                id="message"
-                rows="4"
-                className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 description-textarea"
-                placeholder="Tell Us More....."
-              ></textarea>
+    <div className="max-w-md mx-auto pb-5 pt-5 cursor-pointer">
+      <h2 className="text-xl font-medium text-gray-900 mb-5">
+        Profile Information
+      </h2>
+
+      {!profiles.some((profile) => profile.description) && (
+        <button
+          onClick={handleToggleForm}
+          color="light"
+          className="bg-transparent text-blue-500 py-2 px-4"
+        >
+          <AiOutlinePlus className="h-5 w-5 mr-1" />
+          Add Profile
+        </button>
+      )}
+
+      {profiles ? (
+        <div className="bg-white shadow-md rounded-lg p-6">
+          {profiles.map((profile) => (
+            <div key={profile.id}>
+              <div className="mb-6">
+                <p className="text-lg font-semibold mb-2">Description:</p>
+                <p className="text-gray-800">{profile.description}</p>
+              </div>
+              <div className="flex">
+                <Button
+                  onClick={() => handleOpenModal(profile.id)}
+                  color="light"
+                  className="bg-transparent text-blue-700 font-semibold py-2 px-4 mr-2"
+                >
+                  <AiOutlineEdit className="h-5 w-5 mr-1" />
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => handleDeleteProfile(profile.id)}
+                  color="light"
+                  className="bg-transparent text-red-700 font-semibold py-2 px-4"
+                >
+                  <AiOutlineDelete className="h-5 w-5 mr-1" />
+                  Delete
+                </Button>
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
+      ) : null}
+
+      {showForm && (
+        <div>
           <button
-            type="save"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="text-red-500 hover:text-red-700 focus:outline-none"
+            onClick={handleToggleForm}
           >
-            Save
+            <div className="grid grid-cols-2">
+              <AiOutlineClose className="h-5 w-5 mr-1" /> Close
+            </div>
           </button>
-        </form>
-      </div>
+          <DescriptionForm onSave={() => setShowForm(false)} />
+        </div>
+      )}
+
+      <EditModal
+        open={open}
+        title="Edit Profile"
+        size="md"
+        className="bg-transparent"
+        onClose={handleCloseModal}
+      >
+        <DescriptionForm
+          existingData={profiles.find(
+            (profile) => profile.id === selectedProfileId
+          )}
+          onSave={() => setShowForm(false)}
+        />
+      </EditModal>
     </div>
   );
-}
+};
 
-export default Description;
+export default ProfileContainer;
