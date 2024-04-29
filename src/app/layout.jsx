@@ -12,6 +12,7 @@ import { LanguagesProvider } from './(context)/languagesContext';
 import { ExperienceProvider } from './(context)/experienceContext';
 import { ReferenceProvider } from './(context)/referenceContext'; // Update the import path
 import { SkillProvider } from './(context)/skillContext'; // Update the import path
+import { ProfileProvider } from './(context)/profileContext'; // Import ProfileProvider from the profile context
 
 
 
@@ -36,7 +37,11 @@ export default function RootLayout({ children }) {
                   <SkillProvider>
                     <NavBar />
                     <ReferenceProvider>
+                      <ProfileProvider>
+                        
                       {children}
+
+                      </ProfileProvider>
                     </ReferenceProvider>
                   </SkillProvider>
                 </ExperienceProvider>
