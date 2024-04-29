@@ -95,11 +95,15 @@ export const LanguagesProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Failed to delete language');
       }
-      fetchLanguages();
+      // Update the state after deletion
+      setLanguages((prevLanguages) =>
+        prevLanguages.filter((language) => language.id !== languageId)
+      );
     } catch (error) {
       console.error('Delete Language Error:', error.message);
     }
   };
+
 
   useEffect(() => {
     fetchLanguages();
