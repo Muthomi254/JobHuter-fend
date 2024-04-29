@@ -16,6 +16,7 @@ export default function BasicInfo() {
     nationality: '',
     passport_id: '',
     gender: '',
+    cv_name:'',
     image_data: null, // Updated to handle file uploads
   });
 
@@ -73,6 +74,7 @@ const handleSubmit = async () => {
         nationality: formData.nationality,
         passport_id: formData.passport_id,
         gender: formData.gender,
+        cv_name: formData.cv_name,
       };
 
       // Create a new FormData object to handle file upload
@@ -159,6 +161,24 @@ const handleSubmit = async () => {
               required
             />
           </div>
+          <div>
+            <label
+              htmlFor="cv_name"
+              className="block mb-2 text-sm font-medium text-gray-900"
+            >
+              CV Name
+            </label>
+            <input
+              type="text"
+              id="cv_name"
+              value={formData.cv_name}
+              onChange={handleChange}
+              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder="Google's cv"
+              // required
+            />
+          </div>
+
           <div>
             <label
               htmlFor="job_title"
@@ -273,7 +293,6 @@ const handleSubmit = async () => {
           >
             Save
           </button>
-        
         </div>
       </form>
     </div>
