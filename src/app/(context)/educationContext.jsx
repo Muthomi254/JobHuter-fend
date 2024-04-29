@@ -79,22 +79,26 @@ export const EducationProvider = ({ children }) => {
     }
   };
 
-  const deleteEducationEntry = async (id) => {
-    try {
-      const response = await fetch(`${BASE_URL}/education/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete education entry');
-      }
-      fetchEducationEntries(); // Refetch entries after deleting
-    } catch (error) {
-      console.error('Delete Education Entry Error:', error.message);
-    }
-  };
+ const deleteEducationEntry = async (id) => {
+   try {
+     const response = await fetch(`${BASE_URL}/education/${id}`, {
+       method: 'DELETE',
+       headers: {
+         Authorization: `Bearer ${localStorage.getItem('token')}`,
+       },
+     });
+     if (!response.ok) {
+       throw new Error('Failed to delete education entry');
+     }
+     // Update the state after deletion
+     setEducationEntries((prevEntries) =>
+       prevEntries.filter((entry) => entry.id !== id)
+     );
+   } catch (error) {
+     console.error('Delete Education Entry Error:', error.message);
+   }
+ };
+
 
   useEffect(() => {
     fetchEducationEntries();

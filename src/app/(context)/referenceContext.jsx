@@ -77,23 +77,27 @@ export const ReferenceProvider = ({ children }) => {
     }
   };
 
-  const deleteReferenceEntry = async (referenceId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${BASE_URL}/references/${referenceId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete reference entry');
-      }
-      fetchReferenceEntries();
-    } catch (error) {
-      console.error('Delete Reference Entry Error:', error.message);
-    }
-  };
+ const deleteReferenceEntry = async (referenceId) => {
+   try {
+     const token = localStorage.getItem('token');
+     const response = await fetch(`${BASE_URL}/references/${referenceId}`, {
+       method: 'DELETE',
+       headers: {
+         Authorization: `Bearer ${token}`,
+       },
+     });
+     if (!response.ok) {
+       throw new Error('Failed to delete reference entry');
+     }
+     // Update the state after deletion
+     setReferenceEntries((prevEntries) =>
+       prevEntries.filter((entry) => entry.id !== referenceId)
+     );
+   } catch (error) {
+     console.error('Delete Reference Entry Error:', error.message);
+   }
+ };
+
 
   const contextValue = {
     referenceEntries,

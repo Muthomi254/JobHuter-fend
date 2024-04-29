@@ -83,11 +83,15 @@ const BASE_URL =
       if (!response.ok) {
         throw new Error('Failed to delete experience entry');
       }
-      fetchExperiences();
+      // Update the state after deletion
+      setExperiences((prevEntries) =>
+        prevEntries.filter((entry) => entry.id !== experienceId)
+      );
     } catch (error) {
       console.error('Delete Experience Entry Error:', error.message);
     }
   };
+
 
   useEffect(() => {
     fetchExperiences();

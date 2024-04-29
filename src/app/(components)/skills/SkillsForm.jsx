@@ -116,16 +116,10 @@ const SkillForm = ({ onSave, onCancel, existingData }) => {
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
           >
-            {existingData ? 'Update' : 'Save'}{' '}
+            {existingData ? 'Update' : 'Save'}
             {/* Change button text based on whether updating or adding */}
           </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="text-gray-700 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
-          >
-            Cancel
-          </button>
+         
         </div>
       </form>
     </div>

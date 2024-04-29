@@ -85,11 +85,15 @@ export const SkillProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Failed to delete skill');
       }
-      fetchSkills();
+      // Update the state after deletion
+      setSkills((prevSkills) =>
+        prevSkills.filter((skill) => skill.id !== skillId)
+      );
     } catch (error) {
       console.error('Delete Skill Error:', error.message);
     }
   };
+
 
   return (
     <SkillContext.Provider

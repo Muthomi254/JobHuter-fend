@@ -13,21 +13,27 @@ export const useBasicInfo = () => useContext(BasicInfoContext);
 export const BasicInfoProvider = ({ children }) => {
   const [basicInfo, setBasicInfo] = useState(null);
 
-  const createBasicInfo = async (formData) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/basic-info`, formData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      console.log('BasicInfo created successfully:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating BasicInfo:', error);
-      throw new Error('Failed to create BasicInfo');
-    }
-  };
+const createBasicInfo = async (formData) => {
+  try {
+    // Convert FormData to JSON object
+    const jsonData = {};
+    formData.forEach((value, key) => {
+      jsonData[key] = value;
+    });
+
+    const response = await axios.post(`${BASE_URL}/basic-info`, jsonData, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    console.log('BasicInfo created successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating BasicInfo:', error);
+    throw new Error('Failed to create BasicInfo');
+  }
+};
 
  
 
