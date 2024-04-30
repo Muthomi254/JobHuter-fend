@@ -1,37 +1,32 @@
 "use client"
 import React from 'react';
-import { useState } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlinePlus } from 'react-icons/ai';
+import { useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
-function SocialMediaForm() {
-  const [socialMedia, setSocialMedia] = useState([{ name: '', link: '' }]);
 
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const list = [...socialMedia];
-    list[index][name] = value;
-    setSocialMedia(list);
-  };
+function SocialMediaForm({ register }) {
+  const { control, fields, append, remove } = useFieldArray({
+    control: useForm().control,
+    name: 'socialMedia',
+  });
 
   const handleAddSocialMedia = () => {
-    setSocialMedia([...socialMedia, { name: '', link: '' }]);
+    append({ platform_name: '', social_links: '' });
   };
 
   const handleRemoveSocialMedia = (index) => {
-    const list = [...socialMedia];
-    list.splice(index, 1);
-    setSocialMedia(list);
+    remove(index);
   };
 
   return (
     <div>
       <div className="grid grid-cols-1 ">
         <label
-          htmlFor="social_links"
+          htmlFor="socials"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          Socials
+          Social Media
         </label>
         <button
           type="button"
@@ -42,22 +37,20 @@ function SocialMediaForm() {
           Add Social Media
         </button>
       </div>
-      {socialMedia.map((item, index) => (
-        <div key={index} className="grid grid-cols-3 gap-4 mb-4">
+      {fields.map((field, index) => (
+        <div key={field.id} className="grid grid-cols-3 gap-4 mb-4">
           <input
             type="text"
-            name="name"
-            value={item.name}
-            onChange={(event) => handleInputChange(index, event)}
+            {...register(`socialMedia[${index}].platform_name`)}
+            defaultValue={field.platform_name}
             placeholder="Platform Name"
             className="block py-2.5 px-0 col-span-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           />
           <input
             type="url"
-            name="link"
-            value={item.link}
-            onChange={(event) => handleInputChange(index, event)}
-            placeholder="Link"
+            {...register(`socialMedia[${index}].social_links`)}
+            defaultValue={field.social_links}
+            placeholder="URL"
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           />
           <button
@@ -70,6 +63,7 @@ function SocialMediaForm() {
         </div>
       ))}
     </div>
-  );}
+  );
+}
 
 export default SocialMediaForm;
