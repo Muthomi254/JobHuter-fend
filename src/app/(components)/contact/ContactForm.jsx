@@ -21,22 +21,22 @@ function ContactForm({ existingData }) {
     }
   }, [existingData, reset]);
 
+  
 const onSubmit = async (data) => {
   try {
-    // Extract platform names and social links separately
-    const socialMediaData = Object.keys(data)
-      .filter((key) => key.startsWith('platform_name'))
-      .map((key) => ({
-        platform_name: data[key],
-        social_links: data[`social_links${key.slice(13)}`], // Extract corresponding social link
-      }));
+    const { socialMedia, ...contactData } = data;
 
-    // Prepare formData object with extracted data
+    // Check if socialMedia exists before mapping
+    const socialMediaData = socialMedia
+      ? socialMedia.map(({ platform_name, social_links }) => ({
+          platform_name,
+          social_links,
+        }))
+      : [];
+
     const formData = {
-      cv_email: data.cv_email,
-      phone: data.phone,
-      address: data.address,
-      social_media: socialMediaData,
+      ...contactData,
+      social_media: socialMediaData.slice(0, 10),
     };
 
     if (selectedContact) {
@@ -50,7 +50,6 @@ const onSubmit = async (data) => {
     }
     // Reset the form after submission
     reset({});
-    setSelectedContact(null);
   } catch (error) {
     console.error('Error:', error);
   }
