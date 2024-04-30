@@ -21,36 +21,41 @@ function ContactForm({ existingData }) {
     }
   }, [existingData, reset]);
 
-  const onSubmit = async (data) => {
-    try {
-      const { socialMedia, ...contactData } = data;
-      const socialMediaData = socialMedia.map(
-        ({ platform_name, social_links }) => ({
-          platform_name,
-          social_links,
-        })
-      );
+const onSubmit = async (data) => {
+  try {
+    // Extract platform names and social links separately
+    const socialMediaData = Object.keys(data)
+      .filter((key) => key.startsWith('platform_name'))
+      .map((key) => ({
+        platform_name: data[key],
+        social_links: data[`social_links${key.slice(13)}`], // Extract corresponding social link
+      }));
 
-      const formData = {
-        ...contactData,
-        social_media: socialMediaData.slice(0, 10),
-      };
+    // Prepare formData object with extracted data
+    const formData = {
+      cv_email: data.cv_email,
+      phone: data.phone,
+      address: data.address,
+      social_media: socialMediaData,
+    };
 
-      if (selectedContact) {
-        // If selectedContact exists, update the contact
-        await updateContact(selectedContact.id, formData);
-        console.log('Contact updated successfully');
-      } else {
-        // If selectedContact does not exist, create a new contact
-        await createContact(formData);
-        console.log('Contact created successfully');
-      }
-      // Reset the form after submission
-      reset({});
-    } catch (error) {
-      console.error('Error:', error);
+    if (selectedContact) {
+      // If selectedContact exists, update the contact
+      await updateContact(selectedContact.id, formData);
+      console.log('Contact updated successfully');
+    } else {
+      // If selectedContact does not exist, create a new contact
+      await createContact(formData);
+      console.log('Contact created successfully');
     }
-  };
+    // Reset the form after submission
+    reset({});
+    setSelectedContact(null);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
 
   const handleEdit = (contact) => {
     // Set selectedContact when editing a contact
