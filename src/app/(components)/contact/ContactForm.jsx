@@ -1,69 +1,155 @@
-
-
-
-
-import React from 'react';
+'use client';
+'use client';
+import React, { useEffect, useState } from 'react';
 import SocialMedia from './SocialMedia';
-import PhoneNumber from './PhoneNumber';
+import { useForm } from 'react-hook-form';
+import { Button } from 'flowbite-react';
+import { useContact } from '../../(context)/contactContext';
 
-function Contact() {
+function ContactForm({ existingData }) {
+  const { register, handleSubmit, reset } = useForm();
+  const { createContact, updateContact } = useContact();
+  const [selectedContact, setSelectedContact] = useState(null);
+
+  // Reset the form when existingData changes
+  useEffect(() => {
+    if (existingData) {
+      setSelectedContact(existingData);
+      reset(existingData);
+    } else {
+      reset({});
+    }
+  }, [existingData, reset]);
+
+  const onSubmit = async (data) => {
+    try {
+      const { socialMedia, ...contactData } = data;
+      const socialMediaData = socialMedia.map(
+        ({ platform_name, social_links }) => ({
+          platform_name,
+          social_links,
+        })
+      );
+
+      const formData = {
+        ...contactData,
+        social_media: socialMediaData.slice(0, 10),
+      };
+
+      if (selectedContact) {
+        // If selectedContact exists, update the contact
+        await updateContact(selectedContact.id, formData);
+        console.log('Contact updated successfully');
+      } else {
+        // If selectedContact does not exist, create a new contact
+        await createContact(formData);
+        console.log('Contact created successfully');
+      }
+      // Reset the form after submission
+      reset({});
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleEdit = (contact) => {
+    // Set selectedContact when editing a contact
+    setSelectedContact(contact);
+  };
+
+  const handleCancelEdit = () => {
+    // Reset selectedContact when canceling edit
+    setSelectedContact(null);
+    // Reset the form
+    reset({});
+  };
+
   return (
     <div>
-      <div className="max-w-md mx-auto pb-10  h-screen flex justify-center items-center">
-        <form className="max-w-md w-full px-4">
-          {' '}
-          <div class="grid gap-6 mb-10  md:grid-cols-2">
+      <div className="max-w-md mx-auto pb-10 h-screen flex justify-center items-center">
+        <form
+          className="max-w-md w-full px-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="grid gap-6 mb-10 md:grid-cols-2">
             <div>
               <label
-                for=" cv_email"
-                class="block  mb-2 text-sm font-medium text-gray-900 "
+                htmlFor="cv_email"
+                className="block mb-2 text-sm font-medium text-gray-900"
               >
-                Cv_email
+                CV Email
               </label>
               <input
                 type="text"
-                id=" cv_email"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                id="cv_email"
+                name="cv_email"
+                defaultValue={selectedContact ? selectedContact.cv_email : ''}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder="john@example.com"
                 required
+                {...register('cv_email')}
               />
             </div>
-            <label
-              for=" phone"
-              class="block  mb-2 text-sm font-medium text-gray-900 "
-            >
-              Phone Number
-              <PhoneNumber />
-            </label>
-
             <div>
               <label
-                for="address"
-                class="block mb-2 text-sm font-medium text-gray-900 "
+                htmlFor="phone"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                defaultValue={selectedContact ? selectedContact.phone : ''}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder="Phone Number"
+                required
+                {...register('phone')}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="address"
+                className="block mb-2 text-sm font-medium text-gray-900"
               >
                 Address
               </label>
               <input
                 type="text"
                 id="address"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                name="address"
+                defaultValue={selectedContact ? selectedContact.address : ''}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder="Address"
                 required
+                {...register('address')}
               />
             </div>
-
-            <SocialMedia />
+            <SocialMedia register={register} />
+            {/* Render the SocialMedia component */}
           </div>
-          <button
-            type="submit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Save
-          </button>
+
+          <div className="flex justify-between">
+            <Button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-10 dark:bg-blue-600 dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+            >
+              {selectedContact ? 'Update' : 'Save'}
+            </Button>
+            {selectedContact && (
+              <Button
+                onClick={handleCancelEdit}
+                className="text-white bg-red-50 hover:bg-red-500 focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 mb-10 dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-800"
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
         </form>
       </div>
     </div>
   );
 }
 
-export default Contact;
+export default ContactForm;
