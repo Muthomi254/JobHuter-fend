@@ -21,7 +21,7 @@ function ContactForm({ existingData }) {
     }
   }, [existingData, reset]);
 
-  
+
 const onSubmit = async (data) => {
   try {
     const { socialMedia, ...contactData } = data;
@@ -130,7 +130,27 @@ const onSubmit = async (data) => {
                 {...register('address')}
               />
             </div>
-            <SocialMedia register={register} />
+
+            <SocialMedia
+              register={register}
+              existingData={
+                selectedContact
+                  ? {
+                      socialMedia: selectedContact.platform_name
+                        ? selectedContact.platform_name
+                            .split(',')
+                            .map((platform, index) => ({
+                              platform_name: platform.trim(), // Trim to remove extra spaces
+                              social_links: selectedContact.social_links
+                                .split(',')
+                                [index]?.trim(), // Trim to remove extra spaces
+                            }))
+                        : [], // Pass an empty array if no platform name is available
+                    }
+                  : { socialMedia: [] } // Pass an empty array if no selectedContact
+              }
+            />
+
             {/* Render the SocialMedia component */}
           </div>
 
