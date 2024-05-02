@@ -3,12 +3,14 @@ import React from 'react';
 import { AiOutlineDelete, AiOutlinePlus } from 'react-icons/ai';
 import { useFieldArray } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
+import { useContact } from '../../(context)/contactContext';
 
 
-function SocialMediaForm({ register }) {
+function SocialMediaForm({ register, existingData }) {
   const { control, fields, append, remove } = useFieldArray({
     control: useForm().control,
     name: 'socialMedia',
+    defaultValue: existingData || [], // Set defaultValue to existingData or an empty array
   });
 
   const handleAddSocialMedia = () => {
