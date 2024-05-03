@@ -1,7 +1,7 @@
 'use client';
 
 
- import React from 'react';
+ import React, {useContext} from 'react';
  import { useAuth } from '../(context)/authContext'; // Import useAuth hook
  import Link from 'next/link'; // Import Link from Next.js
  import { AuthContext } from '../(context)/authContext';
