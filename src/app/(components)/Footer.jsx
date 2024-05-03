@@ -8,11 +8,10 @@ function Footer() {
         <div className="sm:flex sm:items-center sm:justify-between">
           <Link href="/Cv">
             <div className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-              <img
-                src="https://flowbite.com/docs/images/logo.svg"
-                className="h-8"
-                alt="Flowbite Logo"
-              />
+              <img src="cv_7images.png"
+               className="h-20" 
+               alt="Job Hunter Logo" 
+               />
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                 Job Hunter
               </span>
@@ -25,19 +24,15 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="#">
+              <Link href="/Policy">
                 <div className="hover:underline me-4 md:me-6">
                   Privacy Policy
                 </div>
               </Link>
             </li>
+           
             <li>
-              <Link href="#">
-                <div className="hover:underline me-4 md:me-6">Licensing</div>
-              </Link>
-            </li>
-            <li>
-              <Link href="#">
+              <Link href="/Contacts">
                 <div className="hover:underline">Contact</div>
               </Link>
             </li>
@@ -47,10 +42,7 @@ function Footer() {
 
         <div className="flex items-center justify-center flex-wrap">
           <span className="inline-block text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            © 2024
-              Job Hunter™
-            
-            . All Rights Reserved.
+            © 2024 Job Hunter™ . All Rights Reserved.
           </span>
         </div>
       </div>
