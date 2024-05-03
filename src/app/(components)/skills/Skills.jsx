@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
@@ -15,7 +15,7 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Skills = () => {
-  const { skills, deleteSkill } = useSkillContext();
+  const { skills, deleteSkill, fetchSkills } = useSkillContext();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState(null);
@@ -30,6 +30,10 @@ const Skills = () => {
     setSelectedSkill(skill);
     setOpenEditModal(true);
   };
+
+useEffect(() => {
+  fetchSkills();
+}, []);
 
   const handleDeleteSkill = (id) => {
     Swal.fire({

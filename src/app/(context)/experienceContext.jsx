@@ -93,9 +93,7 @@ const BASE_URL =
   };
 
 
-  useEffect(() => {
-    fetchExperiences();
-  }, []);
+
 
   const contextValue = {
     experiences,
@@ -103,6 +101,7 @@ const BASE_URL =
     addExperienceEntry,
     updateExperienceEntry,
     deleteExperienceEntry,
+    fetchExperiences,
   };
 
   return (

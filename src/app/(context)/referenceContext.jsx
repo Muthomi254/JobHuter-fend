@@ -33,9 +33,7 @@ export const ReferenceProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchReferenceEntries();
-  }, []);
+
 
   const addReferenceEntry = async (formData) => {
     try {
@@ -105,6 +103,7 @@ export const ReferenceProvider = ({ children }) => {
     addReferenceEntry,
     updateReferenceEntry,
     deleteReferenceEntry,
+    fetchReferenceEntries,
   };
 
   return (

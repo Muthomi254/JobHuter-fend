@@ -29,9 +29,7 @@ export const SkillProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchSkills();
-  }, []);
+  
 
   const addSkill = async (skillData) => {
     try {
@@ -102,6 +100,7 @@ export const SkillProvider = ({ children }) => {
         addSkill,
         updateSkill,
         deleteSkill,
+        fetchSkills,
       }}
     >
       {children}

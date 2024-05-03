@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
@@ -15,7 +15,8 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Reference = () => {
-  const { referenceEntries, deleteReferenceEntry } = useReferenceContext();
+  const { referenceEntries, deleteReferenceEntry, fetchReferenceEntries } =
+    useReferenceContext();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedReference, setSelectedReference] = useState(null);
@@ -30,6 +31,10 @@ const Reference = () => {
     setSelectedReference(reference);
     setOpenEditModal(true);
   };
+
+    useEffect(() => {
+      fetchReferenceEntries();
+    }, []);
 
   const handleDeleteReference = (id) => {
     if (!selectedReference) {

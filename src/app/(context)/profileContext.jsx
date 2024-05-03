@@ -30,9 +30,6 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
 
   const createProfile = async (profileData) => {
     try {

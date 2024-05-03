@@ -105,13 +105,6 @@ export const LanguagesProvider = ({ children }) => {
   };
 
 
-  useEffect(() => {
-    fetchLanguages();
-  }, []);
-   useEffect(() => {
-     fetchLanguageLevels();
-   }, []);
-
   const contextValue = {
     languages,
     LanguageLevels,
@@ -119,6 +112,8 @@ export const LanguagesProvider = ({ children }) => {
     addLanguage,
     updateLanguage,
     deleteLanguage,
+    fetchLanguageLevels,
+    fetchLanguages,
   };
 
   return (

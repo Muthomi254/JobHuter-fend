@@ -138,7 +138,7 @@ const handleDeleteProfile = async (profileId) => {
       <EditModal
         open={open}
         title="Edit Profile"
-        size="md"
+        size="sm"
         className="bg-transparent"
         onClose={handleCloseModal}
       >

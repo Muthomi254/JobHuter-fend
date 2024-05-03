@@ -100,9 +100,7 @@ export const EducationProvider = ({ children }) => {
  };
 
 
-  useEffect(() => {
-    fetchEducationEntries();
-  }, []); // Fetch entries on component mount
+ 
 
   // Return an object with the context values
   const contextValue = {
@@ -110,6 +108,7 @@ export const EducationProvider = ({ children }) => {
     addEducationEntry,
     updateEducationEntry,
     deleteEducationEntry,
+    fetchEducationEntries,
   };
 
   return (

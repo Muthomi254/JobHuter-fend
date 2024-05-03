@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
@@ -14,9 +14,12 @@ import EducationForm from './EducationForm';
 import { useEducationContext } from '../../(context)/educationContext';
 import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
+import { Button } from 'flowbite-react';
+
 
 const Education = () => {
-  const { educationEntries, deleteEducationEntry } = useEducationContext();
+  const { educationEntries, deleteEducationEntry, fetchEducationEntries } =
+    useEducationContext();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
@@ -32,6 +35,9 @@ const Education = () => {
     setOpenEditModal(true);
   };
 
+  useEffect(() => {
+    fetchEducationEntries();
+  }, []); // Fetch entries on component mount
   const handleDeleteEducation = (id) => {
     Swal.fire({
       title: 'Delete Education Entry?',
@@ -60,13 +66,13 @@ const Education = () => {
     console.log('Handle Save Education:', formData);
     setShowForm(false);
   };
-   const handleToggleDetails = (education) => {
-     if (selectedEducation && selectedEducation.id === education.id) {
-       setSelectedEducation(null);
-     } else {
-       setSelectedEducation(education);
-     }
-   };
+  const handleToggleDetails = (education) => {
+    if (selectedEducation && selectedEducation.id === education.id) {
+      setSelectedEducation(null);
+    } else {
+      setSelectedEducation(education);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto pb-5 pt-5">

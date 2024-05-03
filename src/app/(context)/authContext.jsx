@@ -8,12 +8,19 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 export const AuthContext = createContext();
 
-// export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
+ 
 
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        setUser({ isLoggedIn: true });
+      }
+    }, []);
   const register = async (formData) => {
     try {
       const response = await axios.post(`${BASE_URL}/register`, formData, {
@@ -63,9 +70,11 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       localStorage.removeItem('token');
     } catch (error) {
-      console.error('Logout error:', 'Logout Failed');
+      console.error('Logout error:', error.response.data.message); // Log the error message from the server
+      throw new Error('Logout Failed');
     }
   };
+
 
   const forgotPassword = async (formData) => {
     try {
@@ -86,6 +95,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
+      
       value={{ user, register, login, logout, forgotPassword }}
     >
       {children}

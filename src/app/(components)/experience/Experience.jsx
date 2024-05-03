@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState,  useEffect } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
@@ -35,6 +35,9 @@ const Experience = () => {
     setOpenEditModal(true);
   };
 
+  useEffect(() => {
+    fetchExperiences();
+  }, []);
   const handleDeleteExperience = (id) => {
     Swal.fire({
       title: 'Delete Experience Entry?',

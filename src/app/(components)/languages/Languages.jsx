@@ -2,7 +2,7 @@
 
 //These are the imports
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AiOutlineDelete,
   AiOutlinePlus,
@@ -17,7 +17,8 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Language = () => {
-  const { languages, deleteLanguage } = useLanguages();
+  const { languages, deleteLanguage, fetchLanguages, fetchLanguageLevels } =
+    useLanguages();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
@@ -32,6 +33,13 @@ const Language = () => {
      setOpenEditModal(true);
    };
 
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+  useEffect(() => {
+    fetchLanguageLevels();
+  }, []);
 
   const handleDeleteLanguage = (id) => {
     Swal.fire({
