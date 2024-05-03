@@ -25,7 +25,7 @@ export default function About() {
 
       <div className="container mx-auto px-4 py-8">
         
-        <h1 className="text-3xl font-bold mb-8 text-center ">About Us</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center pt-10">About Us</h1>
 
         <p className="text-lg text-gray-700 mb-6">
           Welcome to Job Hunter, your ultimate destination for creating
@@ -35,7 +35,7 @@ export default function About() {
         </p>
 
         {/* Our Mission */}
-        <div className="mb-12">
+        <div className="mb-12 pt-4">
           <h2 className="flex items-center text-2xl font-bold mb-4">
             <HiOutlineUserGroup className="mr-2 text-blue-500" />
             Our Mission
