@@ -1,7 +1,5 @@
 'use client';
 
-// ContactContainer.js
-
 import React, { useState, useEffect } from 'react';
 import {
   AiOutlinePlus,
@@ -13,6 +11,7 @@ import ContactForm from './ContactForm';
 import EditModal from '../ui-components/EditModal';
 import { useContact } from '../../(context)/contactContext';
 import { Button } from 'flowbite-react';
+import Swal from 'sweetalert2';
 
 const ContactContainer = () => {
   const [showForm, setShowForm] = useState(false);
@@ -28,6 +27,7 @@ const ContactContainer = () => {
     setShowForm(!showForm);
   };
 
+
   const handleOpenModal = (contactId) => {
     setSelectedContactId(contactId);
     setOpen(true);
@@ -39,19 +39,48 @@ const ContactContainer = () => {
 
   const handleDeleteContact = async (contactId) => {
     try {
-      await deleteContact(contactId);
-      fetchContacts();
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        icon: 'warning',
+        title: 'Are you sure?',
+        text: 'You are about to delete this contact. This action cannot be undone.',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+      });
+
+      // Proceed with deletion if user confirms
+      if (result.isConfirmed) {
+        await deleteContact(contactId);
+        fetchContacts();
+        // Show success notification
+        await Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Contact deleted successfully',
+        });
+      }
     } catch (error) {
       console.error('Error deleting contact:', error);
+      // Show error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to delete contact',
+      });
     }
   };
+
+  const hasContacts = contacts.length > 0;
 
   return (
     <div className="max-w-md mx-auto">
       <h2 className="text-xl font-medium text-gray-900 mb-5">
         Contact Information
       </h2>
-      {!showForm && (
+      {!showForm && !hasContacts && (
         <button
           onClick={handleToggleForm}
           className="text-blue-500 hover:text-blue-700 focus:outline-none"
@@ -77,27 +106,11 @@ const ContactContainer = () => {
         </div>
       )}
 
-      {/* Render EditModal */}
-      <EditModal
-        open={open}
-        title="Edit Contact"
-        size="md"
-        className="bg-transparent"
-        onClose={handleCloseModal}
-      >
-        {/* Pass existing contact data to ContactForm */}
-        <ContactForm
-          existingData={contacts.find(
-            (contact) => contact.id === selectedContactId
-          )}
-        />
-      </EditModal>
-
       {/* Display fetched contacts */}
       {contacts.map((contact) => (
         <div
           key={contact.id}
-          className="bg-white shadow-md rounded-lg p-6 mt-4 "
+          className="bg-white shadow-md rounded-lg p-6 mt-4"
         >
           <div className="mb-4">
             <div className="flex justify-between mb-2">
@@ -115,7 +128,7 @@ const ContactContainer = () => {
             <div className="flex  justify-between  flex-col-2 underline">
               <div className="flex flex-col">
                 <span className="text-md font-semibold mb-2">
-                  Platform Names:
+                  Platform :
                 </span>
                 {contact.platform_name.split(',').map((platform, index) => (
                   <span key={index} className="text-gray-800">
@@ -135,6 +148,33 @@ const ContactContainer = () => {
               </div>
             </div>
           </div>
+
+          {/* Render EditModal */}
+          <EditModal
+            open={open && selectedContactId === contact.id}
+            title="Edit Contact"
+            size="sm"
+            className="bg-transparent"
+            onClose={handleCloseModal}
+          >
+            {/* Pass existing contact data to ContactForm */}
+            <ContactForm
+              existingData={{
+                ...contact,
+                social_media: {
+                  platformName: contact.platform_name
+                    ? contact.platform_name
+                        .split(',')
+                        .map((platform) => platform.trim())
+                    : [],
+                  socialLinks: contact.social_links
+                    ? contact.social_links.split(',').map((link) => link.trim())
+                    : [],
+                },
+                
+              }}
+            />
+          </EditModal>
 
           <div className="flex">
             <Button
