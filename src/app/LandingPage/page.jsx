@@ -1,7 +1,6 @@
 "use client" ; 
 
 import React from 'react';
-import cvImage from '../assests/cv_image.jpg'; 
 import Link from 'next/link';
 
 function Body() {
@@ -15,7 +14,7 @@ function Body() {
               Build a professional CV effortlessly with our user-friendly app.
             </p>
             <button className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700">
-              <Link href= "/register">Get Started</Link>
+              <Link href="/register">Get Started</Link>
             </button>
             <Link
               href="/login"
@@ -25,7 +24,7 @@ function Body() {
             </Link>
           </div>
           <img
-            src={cvImage}
+            src={'/cv_image.jpg'}
             alt="CV App"
             className="mx-auto md:mx-0 w-full md:w-auto"
           />
@@ -36,11 +35,14 @@ function Body() {
           <h2 className="text-2xl font-bold mb-8">Why Choose Our CV App?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
+               <div className="relative w-full md:w-auto">
+                <div className="aspect-w-16 aspect-h-9"></div>
               <img
-                src="/feature1.svg"
+                src="/cv3images.png"
                 alt="Feature 1"
-                className="h-16 mb-4 mx-auto"
+                className="object-cover object-center h-24 md:h-auto "
               />
+              </div>
               <h3 className="text-lg font-semibold mb-2">Easy to Use</h3>
               <p className="text-gray-700">
                 Our app is intuitive and simple to use, making it easy for
@@ -48,11 +50,15 @@ function Body() {
               </p>
             </div>
             <div className="text-center">
-              <img
-                src="/feature2.svg"
-                alt="Feature 2"
-                className="h-16 mb-4 mx-auto"
-              />
+              <div className="relative w-full md:w-auto">
+                <div className="aspect-w-16 aspect-h-9">
+                  <img
+                    src="/cv5images.jpeg"
+                    alt="Feature 2"
+                    className="object-cover object-center h-24 md:h-auto "
+                  />
+                </div>
+              </div>
               <h3 className="text-lg font-semibold mb-2">
                 Customizable Templates
               </h3>
@@ -62,11 +68,15 @@ function Body() {
               </p>
             </div>
             <div className="text-center">
-              <img
-                src="/feature3.svg"
-                alt="Feature 3"
-                className="h-16 mb-4 mx-auto"
-              />
+              <div className="relative w-full md:w-auto">
+                <div className="aspect-w-16 aspect-h-9">
+                  <img
+                    src="/cvimages.jpeg"
+                    alt="Job Hunter"
+                    className="object-cover object-center h-24 md:h-auto "
+                  />
+                </div>
+              </div>
               <h3 className="text-lg font-semibold mb-2">Mobile-Friendly</h3>
               <p className="text-gray-700">
                 Access your CV anytime, anywhere. Our app is fully responsive
