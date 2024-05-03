@@ -5,6 +5,8 @@ import SocialMedia from './SocialMedia';
 import { useForm } from 'react-hook-form';
 import { Button } from 'flowbite-react';
 import { useContact } from '../../(context)/contactContext';
+import Swal from 'sweetalert2';
+
 
 function ContactForm({ existingData }) {
   const { register, handleSubmit, reset } = useForm();
@@ -22,51 +24,70 @@ function ContactForm({ existingData }) {
   }, [existingData, reset]);
 
 
-const onSubmit = async (data) => {
-  try {
-    const { socialMedia, ...contactData } = data;
+ const onSubmit = async (data) => {
+   try {
+     const { socialMedia, ...contactData } = data;
 
-    // Check if socialMedia exists before mapping
-    const socialMediaData = socialMedia
-      ? socialMedia.map(({ platform_name, social_links }) => ({
-          platform_name,
-          social_links,
-        }))
-      : [];
+     // Check if socialMedia exists before mapping
+     const socialMediaData = socialMedia
+       ? socialMedia.map(({ platform_name, social_links }) => ({
+           platform_name,
+           social_links,
+         }))
+       : [];
 
-    const formData = {
-      ...contactData,
-      social_media: socialMediaData.slice(0, 10),
-    };
+     const formData = {
+       ...contactData,
+       social_media: socialMediaData.slice(0, 10),
+     };
 
-    if (selectedContact) {
-      // If selectedContact exists, update the contact
-      await updateContact(selectedContact.id, formData);
-      console.log('Contact updated successfully');
-    } else {
-      // If selectedContact does not exist, create a new contact
-      await createContact(formData);
-      console.log('Contact created successfully');
-    }
-    // Reset the form after submission
-    reset({});
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
+     if (selectedContact) {
+       // If selectedContact exists, update the contact
+       await updateContact(selectedContact.id, formData);
+       // Show success notification
+       Swal.fire({
+         icon: 'success',
+         title: 'Success',
+         text: 'Contact updated successfully',
+       });
+     } else {
+       // If selectedContact does not exist, create a new contact
+       await createContact(formData);
+       // Show success notification
+       Swal.fire({
+         icon: 'success',
+         title: 'Success',
+         text: 'Contact created successfully',
+       });
+     }
+     // Reset the form after submission
+     reset({});
+   } catch (error) {
+     console.error('Error:', error);
+     // Show error notification
+     Swal.fire({
+       icon: 'error',
+       title: 'Error',
+       text: 'Failed to save contact',
+     });
+   }
+ };
+
+ const handleEdit = (contact) => {
+   // Set selectedContact when editing a contact
+   setSelectedContact(contact);
+ };
+
+ const handleCancelEdit = () => {
+   // Reset selectedContact when canceling edit
+   setSelectedContact(null);
+   // Reset the form
+   reset({});
+ };
 
 
-  const handleEdit = (contact) => {
-    // Set selectedContact when editing a contact
-    setSelectedContact(contact);
-  };
 
-  const handleCancelEdit = () => {
-    // Reset selectedContact when canceling edit
-    setSelectedContact(null);
-    // Reset the form
-    reset({});
-  };
+  
 
   return (
     <div>
