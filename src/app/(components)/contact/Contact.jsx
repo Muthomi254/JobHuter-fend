@@ -128,7 +128,7 @@ const ContactContainer = () => {
             <div className="flex  justify-between  flex-col-2 underline">
               <div className="flex flex-col">
                 <span className="text-md font-semibold mb-2">
-                  Platform :
+                  Platform:
                 </span>
                 {contact.platform_name.split(',').map((platform, index) => (
                   <span key={index} className="text-gray-800">
