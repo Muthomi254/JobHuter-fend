@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Card } from 'flowbite-react';
+import Image from 'next/image';
 
 function Body() {
   return (
@@ -23,65 +25,72 @@ function Body() {
               Already have an account? Login
             </Link>
           </div>
-          <img
-            src={'/cv_image.jpg'}
-            alt="CV App"
-            className="mx-auto md:mx-0 w-full md:w-auto"
-          />
+          <Image src={'/cv_image.jpg'} alt="CV App" width={700} height={100} />
         </div>
       </div>
-      <div className="bg-white py-12">
+      <div className="bg-white py-12  min-h-screen">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-8">Why Choose Our CV App?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-               <div className="relative w-full md:w-auto">
-                <div className="aspect-w-16 aspect-h-9"></div>
-              <img
-                src="/cv3images.png"
-                alt="Feature 1"
-                className="object-cover object-center h-24 md:h-auto "
-              />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Easy to Use</h3>
-              <p className="text-gray-700">
-                Our app is intuitive and simple to use, making it easy for
-                anyone to create their CV.
-              </p>
+              <Card className="max-w-sm">
+                <div className="relative w-full md:w-auto">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <Image
+                      src="/cv3images.png"
+                      alt="Feature 1"
+                      width={500}
+                      height={300}
+                      className="object-cover object-center"
+                    />
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Easy to Use</h3>
+                <p className="text-gray-700">
+                  Our app is intuitive and simple to use, making it easy for
+                  anyone to create their CV.
+                </p>
+              </Card>
             </div>
             <div className="text-center">
-              <div className="relative w-full md:w-auto">
-                <div className="aspect-w-16 aspect-h-9">
-                  <img
-                    src="/cv5images.jpeg"
-                    alt="Feature 2"
-                    className="object-cover object-center h-24 md:h-auto "
-                  />
+              <Card className="max-w-sm">
+                <div className="relative w-full md:w-auto">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <Image
+                      src="/cv5images.jpeg"
+                      alt="Feature 2"
+                      width={500}
+                      height={500}
+                    />
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">
-                Customizable Templates
-              </h3>
-              <p className="text-gray-700">
-                Choose from a variety of professionally designed templates to
-                suit your style and industry.
-              </p>
+                <h3 className="text-lg font-semibold mb-2">
+                  Customizable Templates
+                </h3>
+                <p className="text-gray-700">
+                  Choose from a variety of professionally designed templates to
+                  suit your style and industry.
+                </p>
+              </Card>
             </div>
             <div className="text-center">
-              <div className="relative w-full md:w-auto">
-                <div className="aspect-w-16 aspect-h-9">
-                  <img
-                    src="/cvimages.jpeg"
-                    alt="Job Hunter"
-                    className="object-cover object-center h-24 md:h-auto "
-                  />
+              <Card className="max-w-sm">
+                <div className="relative w-full md:w-auto">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <Image
+                      src="/cvimages.jpeg"
+                      alt="Job Hunter"
+                      width={500}
+                      height={500}
+                    />
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Mobile-Friendly</h3>
-              <p className="text-gray-700">
-                Access your CV anytime, anywhere. Our app is fully responsive
-                and optimized for mobile devices.
-              </p>
+                <h3 className="text-lg font-semibold mb-2">Mobile-Friendly</h3>
+                <p className="text-gray-700">
+                  Access your CV anytime, anywhere. Our app is fully responsive
+                  and optimized for mobile devices.
+                </p>
+              </Card>
             </div>
           </div>
         </div>
