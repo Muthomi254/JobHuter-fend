@@ -8,6 +8,7 @@ import { useLanguages } from '../../(context)/languagesContext';
 import { useProfileContext } from '../../(context)/profileContext';
 import { useReferenceContext } from '../../(context)/referenceContext';
 import { useSkillContext } from '../../(context)/skillContext';
+import DownloadButton from '../ui-components/DownloadBtn'; // Import the DownloadButton component
 
 function Templete1() {
   const { basicInfo, fetchBasicInfo } = useBasicInfo();
@@ -47,51 +48,51 @@ function Templete1() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4 text-center pt-4">
+      <h1 className="text-3xl font-serif italic font-bold mb-4 text-center pt-10 text-blue-500">
         {basicInfo?.cv_name}
       </h1>
-      <div className="  mx-5 p-8 pt-10">
-        <div className="grid grid-cols-2 shadow-md rounded-lg bg-gray-500  ">
+      <div className="  rounded-lg " id="content">
+        <div className="grid grid-cols-2 shadow-md rounded-lg  ">
           {/* Left Column */}
           <div className="bg-white p-8 ">
             {/* Basic Info */}
             {basicInfo && (
-              <div className="mb-12">
-                <div className="flex items-center justify-center mb-4">
+              <div className="mb-5">
+                <div className="flex items-center justify-center mb-2">
                   <img
                     src={`data:image/png;base64,${basicInfo.image_data}`}
                     alt="User"
-                    className="w-30 h-30 rounded-full"
+                    className="w-24 h-24 rounded-full"
                   />
                 </div>
-                <div className="text-center pt-4">
-                  <h2 className="text-xl font-serif italic font-bold mb-4">
+                <div className="text-center pt-2">
+                  <h2 className="text-xl font-serif italic font-bold mb-2">
                     {basicInfo.first_name} {basicInfo.last_name}
                   </h2>
-                  <p className="text-lg font-serif font-semibold text-gray-800 mb-8">
+                  <p className="text-lg font-serif font-semibold text-gray-800 mb-2">
                     {basicInfo.job_title}
                   </p>
                   <div className="text-sm text-left font-serif text-gray-800 ">
-                    <p className="mb-4">
-                      <span className="text-md font-semibold mb-4 text-right mr-4">
+                    <p className="mb-1">
+                      <span className="text-md font-semibold  text-right mr-4">
                         Date of Birth:
                       </span>
                       {basicInfo.date_of_birth}
                     </p>
-                    <p className="mb-4">
-                      <span className="text-md font-semibold mb-4 text-right mr-4">
+                    <p className="mb-1">
+                      <span className="text-md font-semibold  text-right mr-4">
                         Nationality:
                       </span>
                       {basicInfo.nationality}
                     </p>
-                    <p className="mb-4">
-                      <span className="text-md font-semibold mb-4 text-right mr-4">
+                    <p className="mb-1">
+                      <span className="text-md font-semibold  text-right mr-4">
                         ID / Passport :
                       </span>
                       {basicInfo.passport_id}
                     </p>
-                    <p className="mb-4">
-                      <span className="text-md font-semibold mb-4 text-right mr-4">
+                    <p className="mb-1">
+                      <span className="text-md font-semibold  text-right mr-4">
                         Gender:
                       </span>
                       {basicInfo.gender}
@@ -103,33 +104,33 @@ function Templete1() {
 
             {/* Contact Information */}
             {contacts.map((contact) => (
-              <div key={contact.id} className="mb-8 ">
-                <h3 className="text-xl italic font-serif font-bold mb-2 bg-gray-200 flex justify-center items-center">
+              <div key={contact.id} className="mb-4 ">
+                <h3 className="text-xl italic font-serif p-2 font-bold mb-2 bg-gray-200 flex justify-center items-center">
                   Contact Information
                 </h3>
                 <div className="text-sm font-serif text-gray-800">
-                  <p className="mb-4">
-                    <span className="text-md font-semibold mb-4  mr-4">
+                  <p className="mb-1">
+                    <span className="text-md font-semibold mb-2  mr-4">
                       Email:
                     </span>
                     {contact.cv_email}
                   </p>
-                  <p className="mb-4">
-                    <span className="text-md  font-semibold mb-4 mr-4">
+                  <p className="mb-1">
+                    <span className="text-md  font-semibold mb-2 mr-4">
                       Phone:
                     </span>
                     {contact.phone}
                   </p>
-                  <p className="mb-4">
-                    <span className="text-md font-semibold mb-4 mr-4">
+                  <p className="mb-1">
+                    <span className="text-md font-semibold mb-2 mr-4">
                       Address:
                     </span>
                     {contact.address}
                   </p>
 
-                  <div className="flex justify-between flex-col-2 pt-5">
+                  <div className="flex justify-between flex-col-2 pt-2">
                     <div className="flex flex-col">
-                      <span className="text-md font-semibold mb-4 underline">
+                      <span className="text-md font-semibold mb-1 underline">
                         Platform :
                       </span>
                       {contact.platform_name
@@ -140,18 +141,18 @@ function Templete1() {
                             href={contact.social_links.split(',')[index]} // Use the corresponding link
                             target="_blank" // Open link in a new tab
                             rel="noopener noreferrer" // Recommended for security reasons
-                            className="text-gray-800 font-bold mb-4 text-sm hover:underline"
+                            className="text-gray-800 font-bold mb-2 text-sm hover:underline"
                           >
                             {platform}
                           </a>
                         ))}
                     </div>
                     <div className="flex flex-col text-right">
-                      <span className="text-md font-bold mb-4 underline i">
+                      <span className="text-md font-bold mb-1 underline i">
                         Links:
                       </span>
                       {contact.social_links.split(',').map((link, index) => (
-                        <div key={index} className="flex justify-end mb-4">
+                        <div key={index} className="flex justify-end mb-2">
                           <a
                             href={link}
                             target="_blank" // Open link in a new tab
@@ -169,19 +170,19 @@ function Templete1() {
             ))}
 
             {/* Languages */}
-            <div className="mb-8 font-serif">
-              <h3 className="text-xl italic font-serif  font-bold mb-2 bg-gray-200 flex justify-center items-center">
+            <div className="mb-4 font-serif">
+              <h3 className="text-xl italic font-serif p-2 font-bold mb-2 bg-gray-200 flex justify-center items-center">
                 Languages
               </h3>
               {languages &&
                 languages.map((language, index) => (
-                  <div key={index} className="text-gray-800 mb-4">
+                  <div key={index} className="text-gray-800 mb-1">
                     <ul>
                       <p className="mb-1 text-lg italic font-bold  mr-2">
                         {language.language}
                       </p>
                       <p className="mb-1">
-                        <span className="text-sm font-semibold mb-4 mr-2">
+                        <span className="text-sm font-semibold mb-1 mr-2">
                           Language Level:
                         </span>
                         {language.language_level}
@@ -192,8 +193,8 @@ function Templete1() {
                 ))}
             </div>
             {/* Profiles */}
-            <div className="mb-8 font-serif">
-              <h2 className="text-xl  italic font-bold mb-2 bg-gray-200 flex justify-center items-center">
+            <div className="mb-2 font-serif">
+              <h2 className="text-xl p-2 italic font-bold mb-2 bg-gray-200 flex justify-center items-center">
                 Profile
               </h2>
               <div className="text-gray-800">
@@ -208,10 +209,10 @@ function Templete1() {
           </div>
 
           {/* Right Column */}
-          <div className="bg-blue-300 p-8 ">
+          <div className="bg-white p-4 px-8 ">
             {/* Education */}
-            <div className="mb-8 font-serif">
-              <h2 className="text-xl italic font-bold font-serif  mb-2 bg-gray-200 flex justify-center items-center">
+            <div className="mb-4 font-serif ">
+              <h2 className="text-xl italic font-bold font-serif p-2 mb-2 bg-gray-200 flex justify-center items-center">
                 Education
               </h2>
               {educationEntries &&
@@ -252,68 +253,67 @@ function Templete1() {
             </div>
 
             {/* Experience */}
-            <div className="mb-8 font-serif ">
-              <h2 className="text-xl italic  font-bold mb-2 bg-gray-200 flex justify-center items-center">
+            <div className="mb-4 font-serif ">
+              <h2 className="text-xl italic p-2 font-bold mb-2 bg-gray-200 flex justify-center items-center">
                 Experience
               </h2>
               {experiences &&
                 experiences.map((experience, index) => (
                   <div key={index} className="text-gray-800">
-                    <ul>
+                    <ol>
                       <p className="mb-1 italic text-md font-semibold">
-                        {experience.employer}
+                        {experience.employer} ||{' '}
+                        <span className="font-thin">
+                          {new Date(experience.start_date).toLocaleDateString(
+                            'en-US',
+                            {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            }
+                          )}
+                          -
+                          {new Date(experience.end_date).toLocaleDateString(
+                            'en-US',
+                            {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            }
+                          )}
+                        </span>
                       </p>
-                      <p className="mb-1 font-semibold text-sm">
+                      <p className="mb-1 italic font-thin text-sm">
                         {' '}
                         {experience.job_title}
-                        <span className="mb-1 ml-1 font-thin text-sm">
+                        <span className="mb-1 ml-1 font-thin text-md">
                           || {experience.city}, {experience.country}
                         </span>
                       </p>
 
-                      <p className="mb-1 text-sm">
-                        {new Date(experience.start_date).toLocaleDateString(
-                          'en-US',
-                          {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          }
-                        )}
-                        -
-                        {new Date(experience.end_date).toLocaleDateString(
-                          'en-US',
-                          {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          }
-                        )}
-                      </p>
-                      <p className="mb-2 text-sm">{experience.description}</p>
-                    </ul>
+                      <p className="mb-1 text-sm"></p>
+                      <p className="mb-1 text-sm">{experience.description}</p>
+                    </ol>
                   </div>
                 ))}
             </div>
 
             {/* Skills */}
-            <div className="mb-8  font-serif">
-              <h2 className="text-xl italic font-serif  font-bold mb-2 bg-gray-200 flex justify-center items-center">
+            <div className="mb-4 font-serif">
+              <h2 className="text-xl italic font-serif p-2 font-bold mb-2 bg-gray-200 flex justify-center items-center">
                 Skills
               </h2>
               {skills &&
                 skills.map((skill, index) => (
-                  <div key={index} className="text-gray-800 mb-4">
+                  <div key={index} className="text-gray-800 mb-1">
                     <ul>
                       <p className="mb-1 text-md italic font-semibold">
-                        {skill.skill}
+                        {skill.skill} ||
+                        <span className="mb-1 font-thin text-sm ml-1">
+                          {skill.skill_level}
+                        </span>
                       </p>
-                      <p className="mb-1 text-sm">
-                        <span className="text-sm font-semibold mb-4  mr-1">
-                          Skill Level:
-                        </span>{' '}
-                        {skill.skill_level}
-                      </p>
+
                       <p className="mb-1 text-sm"> {skill.info}</p>
                     </ul>
                   </div>
@@ -321,27 +321,36 @@ function Templete1() {
             </div>
 
             {/* References */}
-            <div className="font-serif">
-              <h2 className="text-xl italic   font-bold mb-2 bg-gray-200 flex justify-center items-center">
+            <div className="font-serif mb-15">
+              <h2 className="text-xl italic  p-2 font-bold mb-2 bg-gray-200 flex justify-center items-center">
                 References
               </h2>
               {referenceEntries &&
                 referenceEntries.map((reference, index) => (
-                  <div key={index} className="text-gray-800 mb-4">
+                  <div key={index} className="text-gray-800 mb-1">
                     <ul>
-                      <p className="mb-1 text-md italic font-semibold">
-                        {reference.name}
+                      <p className="mb-1 text-sm italic font-semibold">
+                        {reference.name} ||
+                        <span className="mb-1 ml-1 text-sm font-thin">
+                          {reference.job_title}
+                        </span>
                       </p>
-                      <p className="mb-1 text-sm">{reference.job_title}</p>
                       <p className="mb-1 text-sm">{reference.organization}</p>
-                      <p className="mb-1 text-sm"> {reference.email}</p>
-                      <p className="mb-2 text-sm">{reference.phone}</p>
+                      <p className="mb-1 text-sm mr-1">
+                        {reference.email} ,
+                        <span className="ml-1 mb-2 text-sm">
+                          {reference.phone}
+                        </span>
+                      </p>
                     </ul>
                   </div>
                 ))}
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex justify-center mt-4">
+        <DownloadButton content="content" />
       </div>
     </div>
   );
