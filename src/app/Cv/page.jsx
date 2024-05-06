@@ -7,12 +7,12 @@ function Page() {
   return (
           <AuthenticatedPage>
 
-    <div className="flex">
-        <div className="w-1/3">
+    <div className="flex flex-row">
+        <div className="w-auto">
           <CvDisplay />
         </div>
 
-        <div className="w-2/3 pt-10">
+        <div className="w-auto">
           <Templete1 />
         </div>
     </div>
