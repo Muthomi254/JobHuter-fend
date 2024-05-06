@@ -5,18 +5,19 @@ import Templete1 from '../(components)/templetes/Templete1';
 
 function Page() {
   return (
+          <AuthenticatedPage>
+
     <div className="flex">
-      <AuthenticatedPage>
-        <div className="w-1/2">
+        <div className="w-1/3">
           <CvDisplay />
         </div>
-      </AuthenticatedPage>
-      <AuthenticatedPage>
-        <div className="w-1/2">
+
+        <div className="w-2/3 pt-10">
           <Templete1 />
         </div>
-      </AuthenticatedPage>
     </div>
+          </AuthenticatedPage>
+
   );
 }
 

@@ -12,7 +12,6 @@ function CvDisplay() {
   return (
     <div className="container  mx-auto px-4 py-8">
       <div className="p-2 m-6">
-        <AuthenticatedPage>
           <BasicInfo />
           <Description />
 
@@ -22,7 +21,6 @@ function CvDisplay() {
           <Experience />
           <Skills />
           <References />
-        </AuthenticatedPage>
       </div>
     </div>
   );
