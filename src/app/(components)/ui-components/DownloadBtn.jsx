@@ -5,10 +5,27 @@ import jsPDF from 'jspdf';
 function DownloadButton({ content }) {
   const handleDownload = () => {
     const input = document.getElementById(content);
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, 'PNG', 0, 0);
+    const inputWidth = input.offsetWidth;
+    const inputHeight = input.offsetHeight;
+
+    html2canvas(input, {
+      scale: 2,
+      width: inputWidth,
+      height: inputHeight,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait orientation
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pdfWidth / inputWidth, pdfHeight / inputHeight);
+      pdf.addImage(
+        imgData,
+        'JPEG',
+        0,
+        0,
+        inputWidth * ratio,
+        inputHeight * ratio
+      );
       pdf.save('job_hunter_resume.pdf');
     });
   };
