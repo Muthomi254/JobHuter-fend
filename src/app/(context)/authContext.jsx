@@ -45,10 +45,10 @@ export const AuthProvider = ({ children }) => {
         },
       });
 
-
       if (response.status === 200) {
         setUser(response.data.access_token); // Update user state with user data
         localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('loginTime', new Date().getTime()); // Set login time
         return response.data.user; // Return user data
       } else {
         throw new Error('Issue'); // Throw error if user data is missing
@@ -59,21 +59,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
-    try {
-      await axios.post(`${BASE_URL}/logout`, null, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      setUser(null);
-      localStorage.removeItem('token');
-    } catch (error) {
-      console.error('Logout error:', error.response.data.message); // Log the error message from the server
-      throw new Error('Logout Failed');
-    }
-  };
+ const logout = async () => {
+   try {
+     await axios.post(`${BASE_URL}/logout`, null, {
+       headers: {
+         'Content-Type': 'application/json',
+         Authorization: `Bearer ${localStorage.getItem('token')}`,
+       },
+     });
+     setUser(null); // Clear user state
+     localStorage.removeItem('token'); // Remove token from local storage
+     localStorage.removeItem('loginTime'); // Remove login time from local storage
+   } catch (error) {
+     console.error('Logout error:', error.response.data.message); // Log the error message from the server
+     throw new Error('Logout Failed');
+   }
+ };
+
 
 
   const forgotPassword = async (formData) => {
