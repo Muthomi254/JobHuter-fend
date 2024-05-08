@@ -69,8 +69,10 @@ const Language = () => {
       setSelectedLanguage(language);
     }
   };
-
-
+  
+ useEffect(() => {
+fetchLanguageLevels();
+  }, []);
 
   return (
     <div className="max-w-md mx-auto pb-5 pt-5">
