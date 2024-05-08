@@ -2,36 +2,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../(context)/authContext'; // Import useAuth hook
 import Swal from 'sweetalert2';
+import Image from 'next/image';
 
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const loginTime = localStorage.getItem('loginTime');
-      if (loginTime) {
-        const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-        const twentyThreeHours = 23 * 60 * 60 * 1000; // 23 hours in milliseconds
-        const currentTime = new Date().getTime();
-        const elapsedTime = currentTime - parseInt(loginTime);
-
-        setIsLoggedIn(elapsedTime < twentyThreeHours);
-
-        // Optionally, add logic to automatically log out the user after twelve hours
-        if (elapsedTime > twelveHours) {
-          handleLogout();
-        }
-      } else {
-        setIsLoggedIn(false);
-      }
-    }
-  }, [user]);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const handleLogout = async () => {
     Swal.fire({
@@ -70,12 +46,45 @@ function NavBar() {
     });
   };
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const loginTime = localStorage.getItem('loginTime');
+      if (loginTime) {
+        const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+        const twentyThreeHours = 23 * 60 * 60 * 1000; // 23 hours in milliseconds
+        const currentTime = new Date().getTime();
+        const elapsedTime = currentTime - parseInt(loginTime);
+
+        setIsLoggedIn(elapsedTime < twentyThreeHours);
+
+        // Optionally, add logic to automatically log out the user after twelve hours
+        if (elapsedTime > twelveHours) {
+          handleLogout();
+        }
+      } else {
+        setIsLoggedIn(false);
+      }
+    }
+  }, [user, handleLogout]);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Your JSX and component logic continue here
+
+
+
   return (
     <div className="pb-20">
       <div className="bg-white dark:bg-gray-900 fixed w-full z-50 top-0 border-b border-gray-200 dark:border-gray-600 ">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="cv_7images.png" className="h-20" alt="Job Hunter Logo" />
+            <Image src="/cv_7images.png" className="" 
+            
+            width={100}
+             height={50}
+              alt="Job Hunter Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               Job Hunter
             </span>
