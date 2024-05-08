@@ -8,6 +8,11 @@ import Link from 'next/link'; // Import Link from Next.js
 function AuthenticatedPage({ children }) {
   const { user, logout } = useContext(AuthContext); // Destructure user and logout from AuthContext
 
+  const handleLogout = () => {
+    // Define your logout logic here
+    logout(); // Call the logout function provided by the context
+  };
+ 
   useEffect(() => {
     if (user) {
       const loginTime = localStorage.getItem('loginTime');
@@ -22,7 +27,7 @@ function AuthenticatedPage({ children }) {
         }
       }
     }
-  }, [user]); // Run the effect whenever user state changes
+  }, [user, handleLogout]); // Run the effect whenever user state changes
 
   // If user is not logged in, show the login page or a message
   if (!user) {

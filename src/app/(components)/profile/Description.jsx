@@ -35,9 +35,6 @@ const ProfileContainer = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
 
   const handleToggleForm = () => {
     setShowForm(!showForm);

@@ -34,12 +34,6 @@ const Language = () => {
    };
 
 
-  useEffect(() => {
-    fetchLanguages();
-  }, []);
-  useEffect(() => {
-    fetchLanguageLevels();
-  }, []);
 
   const handleDeleteLanguage = (id) => {
     Swal.fire({

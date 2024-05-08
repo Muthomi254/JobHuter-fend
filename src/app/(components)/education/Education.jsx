@@ -35,9 +35,7 @@ const Education = () => {
     setOpenEditModal(true);
   };
 
-  useEffect(() => {
-    fetchEducationEntries();
-  }, []); // Fetch entries on component mount
+
   const handleDeleteEducation = (id) => {
     Swal.fire({
       title: 'Delete Education Entry?',

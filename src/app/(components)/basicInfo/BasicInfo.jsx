@@ -23,9 +23,6 @@ const BasicInfoContainer = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    fetchBasicInfo();
-  }, []);
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
