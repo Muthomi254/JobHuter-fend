@@ -7,10 +7,10 @@ import Image from 'next/image';
 
 function Body() {
   return (
-    <div className="bg-gray-100 min-h-screen pt-20">
+    <div className=" min-h-screen pt-10">
       <div className="container mx-auto py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div className="text-center md:text-left">
+          <div className="text-center p-8 md:text-left">
             <h2 className="text-3xl font-bold mb-4">Create Your Perfect CV</h2>
             <p className="text-lg text-gray-700 mb-6">
               Build a professional CV effortlessly with our user-friendly app.
@@ -25,10 +25,10 @@ function Body() {
               Already have an account? Login
             </Link>
           </div>
-          <Image src={'/cv_image.jpg'} alt="CV App" width={700} height={100} />
+          <Image src={'/cvimage 9.jpg'} alt="CV App" width={700} height={100} />
         </div>
       </div>
-      <div className="bg-white py-12  min-h-screen">
+      <div className="bg-white py-12 pt-12  min-h-screen">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-8">Why Choose Our CV App?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -37,10 +37,10 @@ function Body() {
                 <div className="relative w-full md:w-auto">
                   <div className="aspect-w-16 aspect-h-9">
                     <Image
-                      src="/cv3images.png"
+                      src="/cvImage11.jpg"
                       alt="Feature 1"
                       width={500}
-                      height={300}
+                      height={500}
                       className="object-cover object-center"
                     />
                   </div>
@@ -57,7 +57,7 @@ function Body() {
                 <div className="relative w-full md:w-auto">
                   <div className="aspect-w-16 aspect-h-9">
                     <Image
-                      src="/cv5images.jpeg"
+                      src="/cvImage10.jpg"
                       alt="Feature 2"
                       width={500}
                       height={500}
