@@ -26,66 +26,125 @@ export default function BasicInfo() {
   }, [basicInfo, setValue]);
 
   const handleDateChange = (date) => {
-    setValue('date_of_birth', date);
+    // Convert the date to UTC string without time zone information
+    const formattedDate = date.toISOString().slice(0, 10);
+    setValue('date_of_birth', formattedDate);
   };
 
-  const onSubmit = async (data) => {
-    try {
-      console.log('Submitting formData:', data);
+// Function to convert file to base64
+const convertToBase64 = (file) => {
+  console.log('File type:', typeof file);
+  console.log('File instanceof Blob:', file instanceof Blob);
 
-      if (basicInfo) {
-        await updateBasicInfo(data); // Call updateBasicInfo with updated data
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'BasicInfo updated successfully!',
-        });
-      } else {
-        try {
-          const formData = new FormData();
-          for (const key in data) {
-            if (key === 'image_data') {
-              // Check if image data exists and is properly encoded
-              if (
-                data[key] &&
-                data[key].type &&
-                data[key].type.startsWith('image')
-              ) {
-                formData.append(key, data[key]);
-              } else {
-                throw new Error('Invalid image data format');
-              }
-            } else {
-              formData.append(key, data[key]);
-            }
-          }
-
-          await createBasicInfo(formData); // Call createBasicInfo with form data
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'BasicInfo created successfully!',
-          });
-        } catch (error) {
-          console.error('Error creating BasicInfo:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Failed to create BasicInfo',
-          });
-        }
-      }
-
-      // reset(); // Reset form after submission
-    } catch (error) {
-      console.error('Error:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Failed to save BasicInfo',
-      });
+  return new Promise((resolve, reject) => {
+    if (!(file instanceof Blob)) {
+      reject(new Error('Parameter is not a Blob object'));
+      return;
     }
-  };
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64Image = reader.result.split(',')[1]; // Extract base64 part of the data URL
+      resolve(base64Image);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+
+ const onSubmit = async (data) => {
+   try {
+     console.log('Submitting formData:', data);
+    console.log('Type of image_data:', typeof data.image_data);
+        console.log('image_data field exists:', 'image_data' in data);
+    
+    if (basicInfo) {
+       // Handle updating existing basic information
+       try {
+         const formData = new FormData();
+         for (const key in data) {
+           if (key === 'image_data') {
+             const file = data[key][0]; // Get the file object
+             if (file instanceof Blob) {
+               // Check if it's a Blob object
+               // Convert image data to base64 before appending
+               const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
+               console.log('Base64 image:', base64Image);
+               formData.append(key, base64Image);
+             } else {
+               // Handle if the file is not a Blob object
+               console.error('Selected file is not a Blob object:', file);
+             }
+           } else {
+             formData.append(key, data[key]);
+           }
+         }
+
+         console.log('Final FormData:', formData);
+         await updateBasicInfo(formData); // Call updateBasicInfo with form data
+         Swal.fire({
+           icon: 'success',
+           title: 'Success!',
+           text: 'BasicInfo updated successfully!',
+         });
+       } catch (error) {
+         console.error('Error updating BasicInfo:', error);
+         Swal.fire({
+           icon: 'error',
+           title: 'Error!',
+           text: 'Failed to update BasicInfo',
+         });
+       }
+     } else {
+       try {
+         const formData = new FormData();
+         for (const key in data) {
+           if (key === 'image_data') {
+             const file = data[key][0]; // Get the file object
+             if (file instanceof Blob) {
+               // Check if it's a Blob object
+               // Convert image data to base64 before appending
+               const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
+               console.log('Base64 image:', base64Image); // Log base64 image data
+               formData.append(key, base64Image);
+             } else {
+               // Handle if the file is not a Blob object
+               console.error('Selected file is not a Blob object:', file);
+             }
+           } else {
+             formData.append(key, data[key]);
+           }
+         }
+
+         console.log('Final FormData:', formData); // Log the final FormData object
+         await createBasicInfo(formData); // Call createBasicInfo with form data
+         Swal.fire({
+           icon: 'success',
+           title: 'Success!',
+           text: 'BasicInfo created successfully!',
+         });
+       } catch (error) {
+         console.error('Error creating BasicInfo:', error);
+         Swal.fire({
+           icon: 'error',
+           title: 'Error!',
+           text: 'Failed to create BasicInfo',
+         });
+       }
+     }
+
+     //  reset(); // Reset form after submission
+   } catch (error) {
+     console.error('Error:', error);
+     Swal.fire({
+       icon: 'error',
+       title: 'Error!',
+       text: 'Failed to save BasicInfo',
+     });
+   }
+ };
+
 
   return (
     <div className="max-auto mx-auto pb-5 pt-3 h-screen flex justify-center items-center">
@@ -230,12 +289,12 @@ export default function BasicInfo() {
             Upload image
           </label>
           <input
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            aria-describedby="file_input_help"
             id="file_input"
             type="file"
-            {...register('image_data')}
+            {...register('image_data')} // Register the file input with name 'image_data'
+            aria-describedby="file_input_help"
           />
+
           <p
             className="mt-1 text-sm text-gray-500 dark:text-gray-300"
             id="file_input_help"
