@@ -5,7 +5,7 @@ import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import Basic
 import Calender from '../Calender';
 import Swal from 'sweetalert2'; // Import SweetAlert
 
-export default function BasicInfo() {
+export default function BasicInfo( handleChange ) {
   const {
     register,
     handleSubmit,
@@ -17,6 +17,8 @@ export default function BasicInfo() {
   const { createBasicInfo, updateBasicInfo, basicInfo } = useBasicInfo(); // Access BasicInfoContext
 
   const formData = watch(); // Access form data
+
+  console.log( typeof(handleChange))
 
   useEffect(() => {
     // Prefill the form fields with existing data when in edit mode
@@ -31,120 +33,118 @@ export default function BasicInfo() {
     setValue('date_of_birth', formattedDate);
   };
 
-// Function to convert file to base64
-const convertToBase64 = (file) => {
-  console.log('File type:', typeof file);
-  console.log('File instanceof Blob:', file instanceof Blob);
+  // Function to convert file to base64
+  const convertToBase64 = (file) => {
+    console.log('File type:', typeof file);
+    console.log('File instanceof Blob:', file instanceof Blob);
 
-  return new Promise((resolve, reject) => {
-    if (!(file instanceof Blob)) {
-      reject(new Error('Parameter is not a Blob object'));
-      return;
+    return new Promise((resolve, reject) => {
+      if (!(file instanceof Blob)) {
+        reject(new Error('Parameter is not a Blob object'));
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64Image = reader.result.split(',')[1]; // Extract base64 part of the data URL
+        resolve(base64Image);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      console.log('Submitting formData:', data);
+      console.log('Type of image_data:', typeof data.image_data);
+      console.log('image_data field exists:', 'image_data' in data);
+
+      if (basicInfo) {
+        // Handle updating existing basic information
+        try {
+          const formData = new FormData();
+          for (const key in data) {
+            if (key === 'image_data') {
+              const file = data[key][0]; // Get the file object
+              if (file instanceof Blob) {
+                // Check if it's a Blob object
+                // Convert image data to base64 before appending
+                const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
+                console.log('Base64 image:', base64Image);
+                formData.append(key, base64Image);
+              } else {
+                // Handle if the file is not a Blob object
+                console.error('Selected file is not a Blob object:', file);
+              }
+            } else {
+              formData.append(key, data[key]);
+            }
+          }
+
+          console.log('Final FormData:', formData);
+          await updateBasicInfo(formData); // Call updateBasicInfo with form data
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'BasicInfo updated successfully!',
+          });
+        } catch (error) {
+          console.error('Error updating BasicInfo:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to update BasicInfo',
+          });
+        }
+      } else {
+        try {
+          const formData = new FormData();
+          for (const key in data) {
+            if (key === 'image_data') {
+              const file = data[key][0]; // Get the file object
+              if (file instanceof Blob) {
+                // Check if it's a Blob object
+                // Convert image data to base64 before appending
+                const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
+                console.log('Base64 image:', base64Image); // Log base64 image data
+                formData.append(key, base64Image);
+              } else {
+                // Handle if the file is not a Blob object
+                console.error('Selected file is not a Blob object:', file);
+              }
+            } else {
+              formData.append(key, data[key]);
+            }
+          }
+
+          console.log('Final FormData:', formData); // Log the final FormData object
+          await createBasicInfo(formData); // Call createBasicInfo with form data
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'BasicInfo created successfully!',
+          });
+        } catch (error) {
+          console.error('Error creating BasicInfo:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to create BasicInfo',
+          });
+        }
+      }
+
+      //  reset(); // Reset form after submission
+    } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to save BasicInfo',
+      });
     }
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64Image = reader.result.split(',')[1]; // Extract base64 part of the data URL
-      resolve(base64Image);
-    };
-    reader.onerror = (error) => reject(error);
-  });
-};
-
-
- const onSubmit = async (data) => {
-   try {
-     console.log('Submitting formData:', data);
-    console.log('Type of image_data:', typeof data.image_data);
-        console.log('image_data field exists:', 'image_data' in data);
-    
-    if (basicInfo) {
-       // Handle updating existing basic information
-       try {
-         const formData = new FormData();
-         for (const key in data) {
-           if (key === 'image_data') {
-             const file = data[key][0]; // Get the file object
-             if (file instanceof Blob) {
-               // Check if it's a Blob object
-               // Convert image data to base64 before appending
-               const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
-               console.log('Base64 image:', base64Image);
-               formData.append(key, base64Image);
-             } else {
-               // Handle if the file is not a Blob object
-               console.error('Selected file is not a Blob object:', file);
-             }
-           } else {
-             formData.append(key, data[key]);
-           }
-         }
-
-         console.log('Final FormData:', formData);
-         await updateBasicInfo(formData); // Call updateBasicInfo with form data
-         Swal.fire({
-           icon: 'success',
-           title: 'Success!',
-           text: 'BasicInfo updated successfully!',
-         });
-       } catch (error) {
-         console.error('Error updating BasicInfo:', error);
-         Swal.fire({
-           icon: 'error',
-           title: 'Error!',
-           text: 'Failed to update BasicInfo',
-         });
-       }
-     } else {
-       try {
-         const formData = new FormData();
-         for (const key in data) {
-           if (key === 'image_data') {
-             const file = data[key][0]; // Get the file object
-             if (file instanceof Blob) {
-               // Check if it's a Blob object
-               // Convert image data to base64 before appending
-               const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
-               console.log('Base64 image:', base64Image); // Log base64 image data
-               formData.append(key, base64Image);
-             } else {
-               // Handle if the file is not a Blob object
-               console.error('Selected file is not a Blob object:', file);
-             }
-           } else {
-             formData.append(key, data[key]);
-           }
-         }
-
-         console.log('Final FormData:', formData); // Log the final FormData object
-         await createBasicInfo(formData); // Call createBasicInfo with form data
-         Swal.fire({
-           icon: 'success',
-           title: 'Success!',
-           text: 'BasicInfo created successfully!',
-         });
-       } catch (error) {
-         console.error('Error creating BasicInfo:', error);
-         Swal.fire({
-           icon: 'error',
-           title: 'Error!',
-           text: 'Failed to create BasicInfo',
-         });
-       }
-     }
-
-     //  reset(); // Reset form after submission
-   } catch (error) {
-     console.error('Error:', error);
-     Swal.fire({
-       icon: 'error',
-       title: 'Error!',
-       text: 'Failed to save BasicInfo',
-     });
-   }
- };
-
+  };
 
   return (
     <div className="max-auto mx-auto pb-5 pt-3 h-screen flex justify-center items-center">
