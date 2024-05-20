@@ -4,8 +4,10 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+const BASE_URL = 'http://localhost:5000';
+
+console.log('Base URL', BASE_URL);
+
 export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -13,14 +15,13 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
- 
 
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setUser({ isLoggedIn: true });
-      }
-    }, []);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setUser({ isLoggedIn: true });
+    }
+  }, []);
   const register = async (formData) => {
     try {
       const response = await axios.post(`${BASE_URL}/register`, formData, {
@@ -77,7 +78,6 @@ export const AuthProvider = ({ children }) => {
  };
 
 
-
   const forgotPassword = async (formData) => {
     try {
       const response = await axios.post(
@@ -97,7 +97,6 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      
       value={{ user, register, login, logout, forgotPassword }}
     >
       {children}
