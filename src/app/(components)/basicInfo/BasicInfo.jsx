@@ -28,6 +28,12 @@ const BasicInfoContainer = () => {
     setShowForm(!showForm);
   };
 
+  const handleChange = () => {
+    console.log('Hanlde invoked')
+    setShowForm(false)
+    fetchBasicInfo()
+  };
+
   return (
     <div className="max-w-md mx-auto pb-5 pt-5 cursor-pointer">
       <h2 className="text-xl font-medium text-gray-900 mb-5">
@@ -65,8 +71,6 @@ const BasicInfoContainer = () => {
                 >
                   <BasicInfoForm />
                 </EditModal>
-
-                
               </div>
             </div>
           )}
@@ -120,7 +124,7 @@ const BasicInfoContainer = () => {
               )}
             </div>
           </button>
-          {showForm && <BasicInfoForm />}
+          {showForm && <BasicInfoForm handleChange={handleChange} />}
         </>
       )}
     </div>
