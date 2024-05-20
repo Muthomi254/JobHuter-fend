@@ -1,13 +1,12 @@
-"use client";
+'use client';
 import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../(context)/authContext'; // Import useAuth hook
+import { AuthContext } from '../(context)/authContext';
 import Swal from 'sweetalert2';
 import Image from 'next/image';
 
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogout = async () => {
     Swal.fire({
@@ -24,8 +23,6 @@ function NavBar() {
         try {
           await logout();
           localStorage.removeItem('token');
-          localStorage.removeItem('loginTime'); // Remove login time from localStorage
-          setIsLoggedIn(false);
           Swal.fire({
             icon: 'success',
             title: 'Logged out successfully',
@@ -46,51 +43,27 @@ function NavBar() {
     });
   };
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const loginTime = localStorage.getItem('loginTime');
-      if (loginTime) {
-        const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-        const twentyThreeHours = 23 * 60 * 60 * 1000; // 23 hours in milliseconds
-        const currentTime = new Date().getTime();
-        const elapsedTime = currentTime - parseInt(loginTime);
-
-        setIsLoggedIn(elapsedTime < twentyThreeHours);
-
-        // Optionally, add logic to automatically log out the user after twelve hours
-        if (elapsedTime > twelveHours) {
-          handleLogout();
-        }
-      } else {
-        setIsLoggedIn(false);
-      }
-    }
-  }, [user, handleLogout]);
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Your JSX and component logic continue here
-
-
-
   return (
     <div className="pb-20">
-      <div className="bg-white dark:bg-gray-900 fixed w-full z-50 top-0 border-b border-gray-200 dark:border-gray-600 ">
+      <div className="bg-white dark:bg-gray-900 fixed w-full z-50 top-0 border-b border-gray-200 dark:border-gray-600">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center space-x-3 rtl:space-x-reverse">
-            <Image src="/cv_7images.png" className="" 
-            
-            width={100}
-             height={50}
-              alt="Job Hunter Logo" />
+            <Image
+              src="/cv_7images.png"
+              width={100}
+              height={50}
+              alt="Job Hunter Logo"
+            />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               Job Hunter
             </span>
           </div>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            {user && isLoggedIn ? (
+            {user ? (
               <button
                 onClick={handleLogout}
                 className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
@@ -99,10 +72,10 @@ function NavBar() {
               </button>
             ) : (
               <a
-                href="/login"
+                href="/register"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
-                {isLoggedIn ? 'Logout' : 'Get Started'}
+                Get Started
               </a>
             )}
             <button
@@ -138,7 +111,7 @@ function NavBar() {
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
               <li>
                 <a
-                  href={isLoggedIn ? '/Cv' : '/LandingPage'}
+                  href={user ? '/Cv' : '/LandingPage'}
                   className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
                   aria-current="page"
                 >
