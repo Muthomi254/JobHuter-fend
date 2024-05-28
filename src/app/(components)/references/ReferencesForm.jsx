@@ -169,7 +169,7 @@ function ReferenceForm({ existingData, onSave }) {
               htmlFor="phone"
               className="block mb-2 text-sm font-medium text-gray-900"
             >
-              Phone
+              Phone Number
             </label>
             <input
               type="tel"

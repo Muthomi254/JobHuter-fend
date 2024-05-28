@@ -114,17 +114,19 @@ const handleDeleteProfile = async (profileId) => {
             showForm ? 'text-red-500 ' : 'text-blue-500'
           }`}
         >
-          {showForm ? (
-            <>
-              <AiOutlineClose className="h-5 w-5 mr-1" />
-              Close
-            </>
-          ) : (
-            <>
-              <AiOutlinePlus className="h-5 w-5 mr-1" />
-              Add Profile
-            </>
-          )}
+          <div className="flex items-center">
+            {showForm ? (
+              <>
+                <AiOutlineClose className="h-5 w-5 mr-1" />
+                Close
+              </>
+            ) : (
+              <>
+                <AiOutlinePlus className="h-5 w-5 mr-1" />
+                Add Profile
+              </>
+            )}
+          </div>
         </button>
       )}
       {showForm && (
@@ -132,8 +134,6 @@ const handleDeleteProfile = async (profileId) => {
           <DescriptionForm onSave={() => setShowForm(false)} />
         </div>
       )}
-
-      
 
       <EditModal
         open={open}

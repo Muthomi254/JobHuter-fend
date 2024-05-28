@@ -147,7 +147,7 @@ export default function BasicInfo( handleChange ) {
   };
 
   return (
-    <div className="max-auto mx-auto pb-5 pt-3 h-screen flex justify-center items-center">
+    <div className="max-auto mx-auto pb-2 pt-2  flex justify-center items-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg"

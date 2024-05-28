@@ -78,7 +78,7 @@ const LanguageForm = ({ language: initialLanguage, onSave }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto pb-10 h-screen flex justify-center items-center">
+    <div className="max-w-md mx-auto pt-2 flex justify-center items-center">
       <form onSubmit={handleSubmit} className="max-w-md w-full px-4">
         <div>
           <div>
