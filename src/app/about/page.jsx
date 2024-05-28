@@ -24,7 +24,6 @@ export default function About() {
       </Head>
 
       <div className="container mx-auto px-4 py-8">
-        
         <h1 className="text-3xl font-bold mb-8 text-center pt-10">About Us</h1>
 
         <p className="text-lg text-gray-700 mb-6">
@@ -43,7 +42,7 @@ export default function About() {
           <p className="text-lg text-gray-700 mb-6">
             At Job Hunter, our mission is to empower individuals to present
             themselves effectively in the competitive job market. We understand
-            the challenges job seekers face when creating resumes, so we've
+            the challenges job seekers face when creating resumes, so we&apos;ve
             developed a user-friendly platform with a wide range of features to
             make the process seamless and enjoyable.
           </p>
@@ -93,8 +92,8 @@ export default function About() {
           </p>
           <p className="text-lg text-gray-700 mb-6">
             If you have any questions or need assistance, feel free to reach out
-            to our customer support team. We're here to help you succeed in your
-            job search journey.
+            to our customer support team. We&apos;re here to help you succeed in
+            your job search journey.
           </p>
           <p className="text-lg text-gray-700 mb-6">
             Thank you for choosing Job Hunter!
