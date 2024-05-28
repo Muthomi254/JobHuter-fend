@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import Spinner from '@/app/(components)/ui-components/Spinner';
 
 
-function Body() {
+function LandingPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -144,4 +144,4 @@ function Body() {
   );
 }
 
-export default Body;
+export default LandingPage;
