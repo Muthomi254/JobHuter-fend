@@ -31,9 +31,6 @@ const Skills = () => {
     setOpenEditModal(true);
   };
 
-useEffect(() => {
-  fetchSkills();
-}, []);
 
   const handleDeleteSkill = (id) => {
     Swal.fire({

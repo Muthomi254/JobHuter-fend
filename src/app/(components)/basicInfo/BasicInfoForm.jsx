@@ -1,129 +1,155 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import BasicInfoContext
 import Calender from '../Calender';
 import Swal from 'sweetalert2'; // Import SweetAlert
 
-export default function BasicInfo() {
+export default function BasicInfo( handleChange ) {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm();
   const { createBasicInfo, updateBasicInfo, basicInfo } = useBasicInfo(); // Access BasicInfoContext
 
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    job_title: '',
-    date_of_birth: '',
-    nationality: '',
-    passport_id: '',
-    gender: '',
-    cv_name:'',
-    image_data: null, // Updated to handle file uploads
-  });
+  const formData = watch(); // Access form data
+
+  console.log( typeof(handleChange))
 
   useEffect(() => {
     // Prefill the form fields with existing data when in edit mode
     if (basicInfo) {
-      setFormData(basicInfo);
+      Object.keys(basicInfo).forEach((key) => setValue(key, basicInfo[key]));
     }
-  }, [basicInfo]);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-    console.log('form data', formData);
-  };
+  }, [basicInfo, setValue]);
 
   const handleDateChange = (date) => {
-    // Convert selected date to the correct format
-    const formattedDate = date ? date.toISOString().split('T')[0] : '';
-    setFormData({ ...formData, date_of_birth: formattedDate });
+    // Convert the date to UTC string without time zone information
+    const formattedDate = date.toISOString().slice(0, 10);
+    setValue('date_of_birth', formattedDate);
   };
 
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  const reader = new FileReader();
+  // Function to convert file to base64
+  const convertToBase64 = (file) => {
+    console.log('File type:', typeof file);
+    console.log('File instanceof Blob:', file instanceof Blob);
 
-  reader.onloadend = () => {
-    // Check if the result is available
-    if (reader.result) {
-      // Split the result by comma to get the base64-encoded string
-      const base64data = reader.result.split(',')[1];
-      setFormData({ ...formData, image_data: base64data }); // Update the image_data field with the base64-encoded data
-    } else {
-      console.error('No data was read from the file.');
-    }
-  };
+    return new Promise((resolve, reject) => {
+      if (!(file instanceof Blob)) {
+        reject(new Error('Parameter is not a Blob object'));
+        return;
+      }
 
-  if (file) {
-    reader.readAsDataURL(file); // Read the file as data URL
-  }
-};
-
-
-
-const handleSubmit = async () => {
-  try {
-    console.log('Submitting formData:', formData);
-
-    if (basicInfo) {
-      // Update existing basic info
-      const updatedData = {
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        job_title: formData.job_title,
-        date_of_birth: formData.date_of_birth,
-        nationality: formData.nationality,
-        passport_id: formData.passport_id,
-        gender: formData.gender,
-        cv_name: formData.cv_name,
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64Image = reader.result.split(',')[1]; // Extract base64 part of the data URL
+        resolve(base64Image);
       };
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
-      // Create a new FormData object to handle file upload
-      const updatedFormData = new FormData();
-      for (const key in updatedData) {
-        updatedFormData.append(key, updatedData[key]);
-      }
-      if (formData.image_data) {
-        updatedFormData.append('image_data', formData.image_data);
+  const onSubmit = async (data) => {
+    try {
+      console.log('Submitting formData:', data);
+      console.log('Type of image_data:', typeof data.image_data);
+      console.log('image_data field exists:', 'image_data' in data);
+
+      if (basicInfo) {
+        // Handle updating existing basic information
+        try {
+          const formData = new FormData();
+          for (const key in data) {
+            if (key === 'image_data') {
+              const file = data[key][0]; // Get the file object
+              if (file instanceof Blob) {
+                // Check if it's a Blob object
+                // Convert image data to base64 before appending
+                const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
+                console.log('Base64 image:', base64Image);
+                formData.append(key, base64Image);
+              } else {
+                // Handle if the file is not a Blob object
+                console.error('Selected file is not a Blob object:', file);
+              }
+            } else {
+              formData.append(key, data[key]);
+            }
+          }
+
+          console.log('Final FormData:', formData);
+          await updateBasicInfo(formData); // Call updateBasicInfo with form data
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'BasicInfo updated successfully!',
+          });
+        } catch (error) {
+          console.error('Error updating BasicInfo:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to update BasicInfo',
+          });
+        }
+      } else {
+        try {
+          const formData = new FormData();
+          for (const key in data) {
+            if (key === 'image_data') {
+              const file = data[key][0]; // Get the file object
+              if (file instanceof Blob) {
+                // Check if it's a Blob object
+                // Convert image data to base64 before appending
+                const base64Image = await convertToBase64(file); // Pass the file directly to convertToBase64
+                console.log('Base64 image:', base64Image); // Log base64 image data
+                formData.append(key, base64Image);
+              } else {
+                // Handle if the file is not a Blob object
+                console.error('Selected file is not a Blob object:', file);
+              }
+            } else {
+              formData.append(key, data[key]);
+            }
+          }
+
+          console.log('Final FormData:', formData); // Log the final FormData object
+          await createBasicInfo(formData); // Call createBasicInfo with form data
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'BasicInfo created successfully!',
+          });
+        } catch (error) {
+          console.error('Error creating BasicInfo:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to create BasicInfo',
+          });
+        }
       }
 
-      await updateBasicInfo(updatedFormData); // Call updateBasicInfo with updated data
+      //  reset(); // Reset form after submission
+    } catch (error) {
+      console.error('Error:', error);
       Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'BasicInfo updated successfully!',
-      });
-    } else {
-      // Create new basic info
-      const formDataWithImage = new FormData();
-      for (const key in formData) {
-        formDataWithImage.append(key, formData[key]);
-      }
-      if (formData.image_data) {
-        formDataWithImage.append('image_data', formData.image_data);
-        console.log('image', formData.image_data);
-      }
-      await createBasicInfo(formDataWithImage); // Call createBasicInfo with form data
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'BasicInfo created successfully!',
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to save BasicInfo',
       });
     }
-  } catch (error) {
-    console.error('Error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error!',
-      text: 'Failed to save BasicInfo',
-    });
-  }
-};
-
+  };
 
   return (
-    <div className="max-auto mx-auto pb-5 pt-3 h-screen flex justify-center items-center">
+    <div className="max-auto mx-auto pb-2 pt-2  flex justify-center items-center">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg"
       >
         <div className="grid gap-6 mb-10  md:grid-cols-2">
@@ -137,12 +163,11 @@ const handleSubmit = async () => {
             <input
               type="text"
               id="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
+              {...register('first_name', { required: true })}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="John"
-              required
             />
+            {errors.first_name && <span>This field is required</span>}
           </div>
           <div>
             <label
@@ -154,12 +179,11 @@ const handleSubmit = async () => {
             <input
               type="text"
               id="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
+              {...register('last_name', { required: true })}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Doe"
-              required
             />
+            {errors.last_name && <span>This field is required</span>}
           </div>
           <div>
             <label
@@ -171,14 +195,11 @@ const handleSubmit = async () => {
             <input
               type="text"
               id="cv_name"
-              value={formData.cv_name}
-              onChange={handleChange}
+              {...register('cv_name')}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Google's cv"
-              // required
             />
           </div>
-
           <div>
             <label
               htmlFor="job_title"
@@ -189,12 +210,11 @@ const handleSubmit = async () => {
             <input
               type="text"
               id="job_title"
-              value={formData.job_title}
-              onChange={handleChange}
+              {...register('job_title', { required: true })}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Software Engineer"
-              required
             />
+            {errors.job_title && <span>This field is required</span>}
           </div>
           <div>
             <label
@@ -219,12 +239,11 @@ const handleSubmit = async () => {
             </label>
             <input
               id="nationality"
-              value={formData.nationality}
-              onChange={handleChange}
+              {...register('nationality', { required: true })}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="Kenyan"
-              required
             />
+            {errors.nationality && <span>This field is required</span>}
           </div>
           <div>
             <label
@@ -235,12 +254,11 @@ const handleSubmit = async () => {
             </label>
             <input
               id="passport_id"
-              value={formData.passport_id}
-              onChange={handleChange}
+              {...register('passport_id', { required: true })}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder="123-45-678"
-              required
             />
+            {errors.passport_id && <span>This field is required</span>}
           </div>
           <div>
             <label
@@ -252,15 +270,15 @@ const handleSubmit = async () => {
             <select
               id="gender"
               name="gender"
+              {...register('gender', { required: true })}
               className="input-style"
-              value={formData.gender}
-              onChange={handleChange}
             >
               <option value="">Select Gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Binary</option>
             </select>
+            {errors.gender && <span>This field is required</span>}
           </div>
         </div>
         <div className="mb-6">
@@ -270,14 +288,13 @@ const handleSubmit = async () => {
           >
             Upload image
           </label>
-
           <input
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            aria-describedby="file_input_help"
             id="file_input"
             type="file"
-            onChange={handleImageChange} // Call handleImageChange on file selection
+            {...register('image_data')} // Register the file input with name 'image_data'
+            aria-describedby="file_input_help"
           />
+
           <p
             className="mt-1 text-sm text-gray-500 dark:text-gray-300"
             id="file_input_help"

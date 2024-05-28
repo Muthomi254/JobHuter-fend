@@ -35,9 +35,6 @@ const ProfileContainer = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
@@ -79,19 +76,8 @@ const handleDeleteProfile = async (profileId) => {
         Profile Information
       </h2>
 
-      {!profiles.some((profile) => profile.description) && (
-        <button
-          onClick={handleToggleForm}
-          color="light"
-          className="bg-transparent text-blue-500 py-2 px-4"
-        >
-          <AiOutlinePlus className="h-5 w-5 mr-1" />
-          Add Profile
-        </button>
-      )}
-
       {profiles ? (
-        <div className="bg-white shadow-md rounded-lg p-6">
+        <div className="bg-white shadow-md rounded-lg ">
           {profiles.map((profile) => (
             <div key={profile.id}>
               <div className="mb-6">
@@ -120,17 +106,31 @@ const handleDeleteProfile = async (profileId) => {
           ))}
         </div>
       ) : null}
-
+      {!profiles.some((profile) => profile.description) && (
+        <button
+          onClick={handleToggleForm}
+          color="light"
+          className={`py-2 px-4 rounded ${
+            showForm ? 'text-red-500 ' : 'text-blue-500'
+          }`}
+        >
+          <div className="flex items-center">
+            {showForm ? (
+              <>
+                <AiOutlineClose className="h-5 w-5 mr-1" />
+                Close
+              </>
+            ) : (
+              <>
+                <AiOutlinePlus className="h-5 w-5 mr-1" />
+                Add Profile
+              </>
+            )}
+          </div>
+        </button>
+      )}
       {showForm && (
         <div>
-          <button
-            className="text-red-500 hover:text-red-700 focus:outline-none"
-            onClick={handleToggleForm}
-          >
-            <div className="grid grid-cols-2">
-              <AiOutlineClose className="h-5 w-5 mr-1" /> Close
-            </div>
-          </button>
           <DescriptionForm onSave={() => setShowForm(false)} />
         </div>
       )}
@@ -138,7 +138,7 @@ const handleDeleteProfile = async (profileId) => {
       <EditModal
         open={open}
         title="Edit Profile"
-        size="sm"
+        size="md"
         className="bg-transparent"
         onClose={handleCloseModal}
       >

@@ -4,16 +4,17 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../(context)/authContext';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation'; // Import useRouter from Next.js for navigation
+import Spinner from '@/app/(components)/ui-components/Spinner';
 
 export default function Page() {
   const authContext = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const router = useRouter();
 
-    const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword); // Toggle password visibility
-    };
+    
 
  const isSecurePassword = (password) => {
    const hasUppercase = /[A-Z]/.test(password);
@@ -25,6 +26,9 @@ export default function Page() {
    return (
      hasUppercase && hasLowercase && hasNumber && hasSpecialChar && isLongEnough
    );
+ };
+ const togglePasswordVisibility = () => {
+   setShowPassword(!showPassword); // Toggle password visibility
  };
 
 
@@ -39,6 +43,8 @@ export default function Page() {
     // Validate password confirmation
     if (password !== confirm_password) {
       setError('Password confirmation does not match');
+      setLoading(false);
+
       return;
     }
 
@@ -47,6 +53,8 @@ export default function Page() {
       setError(
         'Password must contain at least 8 characters including uppercase, lowercase, number, and special character.'
       );
+      setLoading(false);
+
       return;
     }
 
@@ -69,14 +77,21 @@ export default function Page() {
         text: 'An error occurred while registering. Please try again later.',
       });
       setError('Registration failed user email already exists');
+    } finally {
+      setLoading(false);
     }
   };
 
-
+ const handleNavigation = (path) => {
+   setLoading(true);
+   router.push(path);
+ };
 
 
   return (
     <div className="flex justify-center items-center h-screen">
+      {loading && <Spinner />}
+
       <form className="max-w-md w-full px-4" onSubmit={handleSubmit}>
         <div className="relative z-0 w-full mb-5 group">
           <label
@@ -114,45 +129,9 @@ export default function Page() {
             <button
               type="button"
               className="absolute top-1/2 right-2 transform -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={togglePasswordVisibility} // Toggle password visibility on button click
             >
-              {showPassword ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="h-5 w-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="h-5 w-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M7 12a2 2 0 113.999-.001A2 2 0 017 12z"
-                  />
-                </svg>
-              )}
+              <div className='text-sm'> {showPassword ? 'Hide' : 'Show'}</div>
             </button>
           </div>
         </div>
@@ -177,6 +156,9 @@ export default function Page() {
           Already have an account?
           <a
             href="/login"
+            onClick={() => {
+              handleNavigation('/login');
+            }}
             className="text-blue-600 hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-600 font-medium  hover:underline ml-2"
           >
             Login

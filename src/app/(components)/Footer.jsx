@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 function Footer() {
   return (
@@ -8,10 +9,13 @@ function Footer() {
         <div className="sm:flex sm:items-center sm:justify-between">
           <Link href="/Cv">
             <div className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-              <img src="cv_7images.png"
-               className="h-20" 
-               alt="Job Hunter Logo" 
-               />
+              <Image
+                src="/cv_7images.png"
+                className=" "
+                width={80}
+                height={50}
+                alt="Job Hunter Logo"
+              />
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                 Job Hunter
               </span>
@@ -30,7 +34,7 @@ function Footer() {
                 </div>
               </Link>
             </li>
-           
+
             <li>
               <Link href="/Contacts">
                 <div className="hover:underline">Contact</div>

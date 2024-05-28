@@ -32,9 +32,7 @@ const Reference = () => {
     setOpenEditModal(true);
   };
 
-    useEffect(() => {
-      fetchReferenceEntries();
-    }, []);
+   
 
   const handleDeleteReference = (id) => {
     if (!selectedReference) {

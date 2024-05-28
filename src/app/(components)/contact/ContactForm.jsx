@@ -91,7 +91,7 @@ function ContactForm({ existingData }) {
 
   return (
     <div>
-      <div className="max-w-md mx-auto pb-10 h-screen flex justify-center items-center">
+      <div className="max-w-md mx-auto pt-2 flex justify-center items-center">
         <form
           className="max-w-md w-full px-4"
           onSubmit={handleSubmit(onSubmit)}

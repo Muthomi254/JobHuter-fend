@@ -23,12 +23,15 @@ const BasicInfoContainer = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    fetchBasicInfo();
-  }, []);
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
+  };
+
+  const handleChange = () => {
+    console.log('Hanlde invoked')
+    setShowForm(false)
+    fetchBasicInfo()
   };
 
   return (
@@ -68,8 +71,6 @@ const BasicInfoContainer = () => {
                 >
                   <BasicInfoForm />
                 </EditModal>
-
-                
               </div>
             </div>
           )}
@@ -123,7 +124,7 @@ const BasicInfoContainer = () => {
               )}
             </div>
           </button>
-          {showForm && <BasicInfoForm />}
+          {showForm && <BasicInfoForm handleChange={handleChange} />}
         </>
       )}
     </div>

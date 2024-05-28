@@ -4,8 +4,10 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+const BASE_URL = 'http://localhost:5000';
+
+console.log('Base URL', BASE_URL);
+
 export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -13,14 +15,13 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
- 
 
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setUser({ isLoggedIn: true });
-      }
-    }, []);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setUser({ isLoggedIn: true });
+    }
+  }, []);
   const register = async (formData) => {
     try {
       const response = await axios.post(`${BASE_URL}/register`, formData, {
@@ -28,11 +29,9 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Request data:', formData); // Log request data
-      console.log('Response data:', response.data); // Log response data
+      
       return response.data;
     } catch (error) {
-      console.error('Registration error:', error); // Log registration error
       throw new Error('Registration failed');
     }
   };
@@ -71,11 +70,9 @@ export const AuthProvider = ({ children }) => {
      localStorage.removeItem('token'); // Remove token from local storage
      localStorage.removeItem('loginTime'); // Remove login time from local storage
    } catch (error) {
-     console.error('Logout error:', error.response.data.message); // Log the error message from the server
      throw new Error('Logout Failed');
    }
  };
-
 
 
   const forgotPassword = async (formData) => {
@@ -89,15 +86,12 @@ export const AuthProvider = ({ children }) => {
           },
         }
       );
-      console.log(response.data);
     } catch (error) {
-      console.error('Forgot password error:', 'Forgot-password Failed');
     }
   };
 
   return (
     <AuthContext.Provider
-      
       value={{ user, register, login, logout, forgotPassword }}
     >
       {children}

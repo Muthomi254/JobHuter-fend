@@ -19,9 +19,7 @@ const ContactContainer = () => {
   const [selectedContactId, setSelectedContactId] = useState(null);
   const { contacts, fetchContacts, deleteContact } = useContact();
 
-  useEffect(() => {
-    fetchContacts();
-  }, []);
+ 
 
   const handleToggleForm = () => {
     setShowForm(!showForm);

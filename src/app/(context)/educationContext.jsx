@@ -46,7 +46,6 @@ export const EducationProvider = ({ children }) => {
         body: JSON.stringify(formData),
       });
 
-      console.log('Response:', response);
 
       if (!response.ok) {
         const errorMessage = await response.text();
