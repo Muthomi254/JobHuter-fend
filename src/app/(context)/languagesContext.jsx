@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState,useCallback, useEffect, useMemo} from 'react';
 
 const LanguagesContext = createContext();
 
@@ -14,7 +14,7 @@ export const LanguagesProvider = ({ children }) => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
-  const fetchLanguages = async () => {
+  const fetchLanguages = useCallback(async () => {
     try {
       const response = await fetch(`${BASE_URL}/languages`, {
         headers: {
@@ -30,9 +30,9 @@ export const LanguagesProvider = ({ children }) => {
     } catch (error) {
       console.error('Fetch Languages Error:', error.message);
     }
-  };
+  });
 
-  const fetchLanguageLevels = async () => {
+  const fetchLanguageLevels = useCallback(async () => {
     try {
       const response = await fetch(`${BASE_URL}/language-levels`);
       if (!response.ok) {
@@ -43,7 +43,7 @@ export const LanguagesProvider = ({ children }) => {
     } catch (error) {
       console.error('Fetch Language Levels Error:', error.message);
     }
-  };
+  });
 
 
   const addLanguage = async (languageData) => {
@@ -104,20 +104,30 @@ export const LanguagesProvider = ({ children }) => {
     }
   };
 
-
-  const contextValue = {
-    languages,
-    LanguageLevels,
-    loading,
-    addLanguage,
-    updateLanguage,
-    deleteLanguage,
-    fetchLanguageLevels,
-    fetchLanguages,
-  };
-
+  const value = useMemo(
+    () => ({
+      languages,
+      LanguageLevels,
+      loading,
+      addLanguage,
+      updateLanguage,
+      deleteLanguage,
+      fetchLanguageLevels,
+      fetchLanguages,
+    }),
+    [
+      languages,
+      LanguageLevels,
+      loading,
+      addLanguage,
+      updateLanguage,
+      deleteLanguage,
+      fetchLanguageLevels,
+      fetchLanguages,
+    ]
+  );
   return (
-    <LanguagesContext.Provider value={contextValue}>
+    <LanguagesContext.Provider value={value}>
       {children}
     </LanguagesContext.Provider>
   );

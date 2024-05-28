@@ -47,8 +47,9 @@ function Templete1() {
     // Fetch skills
     fetchSkills();
   },
-[fetchBasicInfo, fetchContacts, fetchEducationEntries, fetchExperiences, fetchLanguages, fetchProfiles, fetchReferenceEntries, fetchSkills]);
-  return (
+[]);
+  
+return (
     <div>
       <h1 className="text-3xl font-serif italic font-bold mb-4 text-center  pt-20 text-blue-500">
         {basicInfo?.cv_name}

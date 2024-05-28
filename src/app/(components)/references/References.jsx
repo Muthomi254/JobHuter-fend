@@ -15,7 +15,7 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Reference = () => {
-  const { referenceEntries, deleteReferenceEntry, fetchReferenceEntries } =
+  const { referenceEntries, deleteReferenceEntry } =
     useReferenceContext();
 
   const [showForm, setShowForm] = useState(false);

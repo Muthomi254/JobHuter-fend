@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 
 const EducationContext = createContext();
 
@@ -14,7 +21,7 @@ export const EducationProvider = ({ children }) => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
-  const fetchEducationEntries = async () => {
+  const fetchEducationEntries = useCallback(async () => {
     try {
       const response = await fetch(`${BASE_URL}/education`, {
         method: 'GET',
@@ -31,7 +38,7 @@ export const EducationProvider = ({ children }) => {
     } catch (error) {
       console.error('Fetch Education Entries Error:', error.message);
     }
-  };
+  });
 
   const addEducationEntry = async (formData) => {
     try {
@@ -98,20 +105,28 @@ export const EducationProvider = ({ children }) => {
    }
  };
 
-
  
 
   // Return an object with the context values
-  const contextValue = {
-    educationEntries,
-    addEducationEntry,
-    updateEducationEntry,
-    deleteEducationEntry,
-    fetchEducationEntries,
-  };
-
+  const value = useMemo(
+    () => ({
+      educationEntries,
+      addEducationEntry,
+      updateEducationEntry,
+      deleteEducationEntry,
+      fetchEducationEntries,
+    }),
+    [
+      educationEntries,
+      addEducationEntry,
+      updateEducationEntry,
+      deleteEducationEntry,
+      fetchEducationEntries,
+    ]
+  );
+  
   return (
-    <EducationContext.Provider value={contextValue}>
+    <EducationContext.Provider value={value}>
       {children}
     </EducationContext.Provider>
   );

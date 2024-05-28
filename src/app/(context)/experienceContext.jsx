@@ -1,7 +1,7 @@
 'use client';
 
   // experienceContext.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
 
 const ExperienceContext = createContext();
 
@@ -12,7 +12,9 @@ export const ExperienceProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
-  const fetchExperiences = async () => {
+
+
+  const fetchExperiences = useCallback(async () => {
     try {
       const response = await fetch(`${BASE_URL}/experience`, {
         headers: {
@@ -28,7 +30,7 @@ const BASE_URL =
     } catch (error) {
       console.error('Fetch Experiences Error:', error.message);
     }
-  };
+  });
 
   
 
@@ -92,20 +94,29 @@ const BASE_URL =
     }
   };
 
+  
 
 
-
-  const contextValue = {
-    experiences,
-    loading,
-    addExperienceEntry,
-    updateExperienceEntry,
-    deleteExperienceEntry,
-    fetchExperiences,
-  };
-
+  const value = useMemo(
+    () => ({
+      experiences,
+      loading,
+      addExperienceEntry,
+      updateExperienceEntry,
+      deleteExperienceEntry,
+      fetchExperiences,
+    }),
+    [
+      experiences,
+      loading,
+      addExperienceEntry,
+      updateExperienceEntry,
+      deleteExperienceEntry,
+      fetchExperiences,
+    ]
+  );
   return (
-    <ExperienceContext.Provider value={contextValue}>
+    <ExperienceContext.Provider value={value}>
       {children}
     </ExperienceContext.Provider>
   );

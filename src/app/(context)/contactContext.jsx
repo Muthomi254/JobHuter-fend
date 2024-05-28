@@ -1,10 +1,15 @@
-// contactContext.js
-
 "use client";
 
 // contactContext.js
 
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 
 const ContactContext = createContext();
 
@@ -17,7 +22,7 @@ export const ContactProvider = ({ children }) => {
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
   // Function to fetch contacts
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     // Make API request to fetch contacts
     try {
       const response = await fetch(`${BASE_URL}/contacts`, {
@@ -34,7 +39,7 @@ export const ContactProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
-  };
+  });
 
   // Function to create a new contact
   const createContact = async (contactData) => {
@@ -101,15 +106,26 @@ export const ContactProvider = ({ children }) => {
     }
   };
 
+
+
+   const value = useMemo(
+     () => ({
+       contacts,
+       fetchContacts,
+       createContact,
+       updateContact,
+       deleteContact,
+     }),
+     [contacts, fetchContacts, createContact, updateContact, deleteContact]
+   );
+
   return (
+ 
+
     <ContactContext.Provider
-      value={{
-        contacts,
-        fetchContacts,
-        createContact,
-        updateContact,
-        deleteContact,
-      }}
+      value={
+        value
+      }
     >
       {children}
     </ContactContext.Provider>
