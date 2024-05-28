@@ -9,6 +9,8 @@ import { useProfileContext } from '../../(context)/profileContext';
 import { useReferenceContext } from '../../(context)/referenceContext';
 import { useSkillContext } from '../../(context)/skillContext';
 import DownloadButton from '../ui-components/DownloadBtn'; // Import the DownloadButton component
+import Image from 'next/image';
+
 
 function Templete1() {
   const { basicInfo, fetchBasicInfo } = useBasicInfo();
@@ -44,9 +46,10 @@ function Templete1() {
 
     // Fetch skills
     fetchSkills();
-  }, []);
-
-  return (
+  },
+[]);
+  
+return (
     <div>
       <h1 className="text-3xl font-serif italic font-bold mb-4 text-center  pt-20 text-blue-500">
         {basicInfo?.cv_name}
@@ -59,9 +62,11 @@ function Templete1() {
             {basicInfo && (
               <div className="mb-5">
                 <div className="flex items-center justify-center mb-2">
-                  <img
+                  <Image
                     src={`data:image/png;base64,${basicInfo.image_data}`}
                     alt="User"
+                    height={500}
+                    width={400}
                     className="w-24 h-24 rounded-full"
                   />
                 </div>

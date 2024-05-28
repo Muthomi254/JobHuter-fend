@@ -19,9 +19,7 @@ function LandingPage() {
 
   return (
     <div className="min-h-screen pt-10 relative">
-      {loading && (
-          <Spinner />
-      )}
+      {loading && <Spinner />}
       <div className="container mx-auto py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="text-center p-8 md:text-left">
@@ -120,21 +118,21 @@ function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-gray-700 mb-4">
-              "I was able to create a stunning CV in minutes. Highly
-              recommended!"
+              &quot; I was able to create a stunning CV in minutes. Highly
+              recommended! &quot;
             </p>
             <p className="text-gray-500">- John Doe</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-gray-700 mb-4">
-              "The templates are beautiful and professional. It helped me stand
-              out from other applicants."
+              &quot; The templates are beautiful and professional. It helped me
+              stand out from other applicants. &quot;
             </p>
             <p className="text-gray-500">- Jane Smith</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-gray-700 mb-4">
-              "Great app! I got hired shortly after using it."
+              &quot; Great app! I got hired shortly after using it. &quot;
             </p>
             <p className="text-gray-500">- Michael Johnson</p>
           </div>

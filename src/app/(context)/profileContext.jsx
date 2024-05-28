@@ -1,7 +1,14 @@
 'use client';
 
 // profileContext.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 
 const ProfileContext = createContext();
 
@@ -12,7 +19,7 @@ export const ProfileProvider = ({ children }) => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
-  const fetchProfiles = async () => {
+  const fetchProfiles = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/profile`, {
@@ -28,7 +35,7 @@ export const ProfileProvider = ({ children }) => {
     } catch (error) {
       console.error('Fetch Profiles Error:', error.message);
     }
-  };
+  });
 
 
   const createProfile = async (profileData) => {
@@ -94,15 +101,22 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+
+
+const value = useMemo(
+  () => ({
+    profiles,
+    fetchProfiles,
+    createProfile,
+    updateProfile,
+    deleteProfile,
+  }),
+  [profiles, fetchProfiles, createProfile, updateProfile, deleteProfile]
+);
+
   return (
     <ProfileContext.Provider
-      value={{
-        profiles,
-        fetchProfiles,
-        createProfile,
-        updateProfile,
-        deleteProfile,
-      }}
+      value={value}
     >
       {children}
     </ProfileContext.Provider>

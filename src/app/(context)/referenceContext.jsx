@@ -1,7 +1,14 @@
 'use client';
 
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 
 const ReferenceContext = createContext();
 
@@ -13,7 +20,7 @@ export const ReferenceProvider = ({ children }) => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
-  const fetchReferenceEntries = async () => {
+  const fetchReferenceEntries = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/references`, {
@@ -31,7 +38,7 @@ export const ReferenceProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  });
 
 
 
@@ -97,17 +104,27 @@ export const ReferenceProvider = ({ children }) => {
  };
 
 
-  const contextValue = {
-    referenceEntries,
-    loading,
-    addReferenceEntry,
-    updateReferenceEntry,
-    deleteReferenceEntry,
-    fetchReferenceEntries,
-  };
 
+  const value = useMemo(
+    () => ({
+      referenceEntries,
+      loading,
+      addReferenceEntry,
+      updateReferenceEntry,
+      deleteReferenceEntry,
+      fetchReferenceEntries,
+    }),
+    [
+      referenceEntries,
+      loading,
+      addReferenceEntry,
+      updateReferenceEntry,
+      deleteReferenceEntry,
+      fetchReferenceEntries,
+    ]
+  );
   return (
-    <ReferenceContext.Provider value={contextValue}>
+    <ReferenceContext.Provider value={value}>
       {children}
     </ReferenceContext.Provider>
   );

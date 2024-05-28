@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import BasicInfoForm from './BasicInfoForm'; // Import the BasicInfoForm component
 import { useBasicInfo } from '../../(context)/basicInfoContext'; // Import useBasicInfo hook
 import { AiOutlinePlus, AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
-
+import Image from 'next/image';
 import { Button } from 'flowbite-react';
 import EditModal from '../ui-components/EditModal';
 
@@ -29,7 +29,6 @@ const BasicInfoContainer = () => {
   };
 
   const handleChange = () => {
-    console.log('Hanlde invoked')
     setShowForm(false)
     fetchBasicInfo()
   };
@@ -45,9 +44,11 @@ const BasicInfoContainer = () => {
           {basicInfo.image_data && (
             <div className="mb-6 flex justify-between items-center">
               <div>
-                <img
+                <Image
                   src={`data:image/png;base64,${basicInfo.image_data}`}
                   alt="User"
+                  width={200}
+                  height={300}
                   className="w-32 h-32 rounded-full"
                 />
               </div>

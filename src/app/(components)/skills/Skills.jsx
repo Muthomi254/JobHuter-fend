@@ -15,7 +15,7 @@ import EditModal from '../ui-components/EditModal';
 import Swal from 'sweetalert2';
 
 const Skills = () => {
-  const { skills, deleteSkill, fetchSkills } = useSkillContext();
+  const { skills, deleteSkill, } = useSkillContext();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState(null);

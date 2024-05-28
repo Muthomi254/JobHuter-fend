@@ -1,7 +1,14 @@
 'use client';
 
 // BasicInfoContext.js
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useEffect,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import axios from 'axios';
 
 const BASE_URL =
@@ -12,10 +19,6 @@ export const useBasicInfo = () => useContext(BasicInfoContext);
 
 export const BasicInfoProvider = ({ children }) => {
   const [basicInfo, setBasicInfo] = useState(null);
-
-  useEffect(() => {
-    console.log('Side effect', basicInfo);
-  }, [basicInfo]);
 
   const createBasicInfo = async (formData) => {
     try {
@@ -32,7 +35,7 @@ export const BasicInfoProvider = ({ children }) => {
         },
       });
       await fetchBasicInfo(); // Fetch the latest basic info after creation
-            return response.data;
+      return response.data;
     } catch (error) {
       throw new Error('Failed to create BasicInfo');
     }
@@ -58,21 +61,22 @@ export const BasicInfoProvider = ({ children }) => {
     }
   };
 
-  const fetchBasicInfo = async () => {
+  const fetchBasicInfo = useCallback(async () => {
     try {
       const response = await axios.get(`${BASE_URL}/basic-info`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      setBasicInfo(response.data); // Update the basicInfo state with the fetched data
+      setBasicInfo(response.data);
     } catch (error) {
-      console.log(error, "New error")
-      throw new Error('Failed to fetch BasicInfo');
+      setBasicInfo(null);
+      console.error(error, 'New error');
     }
-  };
+  }, []);
 
-  const fetchBasicInfoById = async (basicInfoId) => {
+
+  const fetchBasicInfoById = useCallback(async () => {
     try {
       const response = await axios.get(
         `${BASE_URL}/basic-info/${basicInfoId}`,
@@ -82,20 +86,29 @@ export const BasicInfoProvider = ({ children }) => {
           },
         }
       );
-      setBasicInfo(response.data); // Update the basicInfo state with the fetched data
+      setBasicInfo(response.data);
     } catch (error) {
+      setBasicInfo(null);
       console.error('Error fetching BasicInfo by ID:', error);
-      throw new Error('Failed to fetch BasicInfo');
     }
-  };
-
-  const value = {
-    basicInfo,
-    createBasicInfo,
-    updateBasicInfo,
-    fetchBasicInfo,
-    fetchBasicInfoById,
-  };
+  });
+  
+  const value = useMemo(
+    () => ({
+      basicInfo,
+      createBasicInfo,
+      updateBasicInfo,
+      fetchBasicInfo,
+      fetchBasicInfoById,
+    }),
+    [
+      basicInfo,
+      createBasicInfo,
+      updateBasicInfo,
+      fetchBasicInfo,
+      fetchBasicInfoById,
+    ]
+  );;
 
   return (
     <BasicInfoContext.Provider value={value}>

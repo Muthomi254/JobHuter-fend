@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 
 const SkillContext = createContext();
 
@@ -11,7 +18,7 @@ export const SkillProvider = ({ children }) => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
-  const fetchSkills = async () => {
+  const fetchSkills = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/skills`, {
@@ -27,7 +34,7 @@ export const SkillProvider = ({ children }) => {
     } catch (error) {
       console.error('Fetch Skills Error:', error.message);
     }
-  };
+  });
 
   
 
@@ -93,15 +100,20 @@ export const SkillProvider = ({ children }) => {
   };
 
 
+ const value = useMemo(
+   () => ({
+     skills,
+     addSkill,
+     updateSkill,
+     deleteSkill,
+     fetchSkills,
+   }),
+   [skills, addSkill, updateSkill, deleteSkill, fetchSkills]
+ );
+
   return (
     <SkillContext.Provider
-      value={{
-        skills,
-        addSkill,
-        updateSkill,
-        deleteSkill,
-        fetchSkills,
-      }}
+      value={ value }
     >
       {children}
     </SkillContext.Provider>
