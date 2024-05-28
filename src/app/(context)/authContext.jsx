@@ -29,11 +29,9 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Request data:', formData); // Log request data
-      console.log('Response data:', response.data); // Log response data
+      
       return response.data;
     } catch (error) {
-      console.error('Registration error:', error); // Log registration error
       throw new Error('Registration failed');
     }
   };
@@ -72,7 +70,6 @@ export const AuthProvider = ({ children }) => {
      localStorage.removeItem('token'); // Remove token from local storage
      localStorage.removeItem('loginTime'); // Remove login time from local storage
    } catch (error) {
-     console.error('Logout error:', error.response.data.message); // Log the error message from the server
      throw new Error('Logout Failed');
    }
  };
@@ -89,9 +86,7 @@ export const AuthProvider = ({ children }) => {
           },
         }
       );
-      console.log(response.data);
     } catch (error) {
-      console.error('Forgot password error:', 'Forgot-password Failed');
     }
   };
 

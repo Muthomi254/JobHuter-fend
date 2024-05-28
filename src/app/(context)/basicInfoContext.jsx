@@ -31,11 +31,9 @@ export const BasicInfoProvider = ({ children }) => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      console.log('BasicInfo created successfully:', response.data);
       await fetchBasicInfo(); // Fetch the latest basic info after creation
             return response.data;
     } catch (error) {
-      console.error('Error creating BasicInfo:', error);
       throw new Error('Failed to create BasicInfo');
     }
   };
@@ -53,11 +51,9 @@ export const BasicInfoProvider = ({ children }) => {
           },
         }
       );
-      console.log('BasicInfo updated successfully:', response.data);
       await fetchBasicInfo(); // Fetch the latest basic info after update
       return response.data;
     } catch (error) {
-      console.error('Error updating BasicInfo:', error);
       throw new Error('Failed to update BasicInfo');
     }
   };
@@ -71,7 +67,7 @@ export const BasicInfoProvider = ({ children }) => {
       });
       setBasicInfo(response.data); // Update the basicInfo state with the fetched data
     } catch (error) {
-      console.error('Error fetching BasicInfo:', error);
+      console.log(error, "New error")
       throw new Error('Failed to fetch BasicInfo');
     }
   };
@@ -86,7 +82,6 @@ export const BasicInfoProvider = ({ children }) => {
           },
         }
       );
-      console.log('Fetched BasicInfo by ID:', response.data);
       setBasicInfo(response.data); // Update the basicInfo state with the fetched data
     } catch (error) {
       console.error('Error fetching BasicInfo by ID:', error);
