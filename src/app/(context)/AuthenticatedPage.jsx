@@ -9,10 +9,7 @@ function AuthenticatedPage({ children }) {
   const { user, logout } = useContext(AuthContext); // Destructure user and logout from AuthContext
   const [loading, setLoading] = useState(true); // Add loading state
 
-  const handleLogout = () => {
-    // Define your logout logic here
-    logout(); // Call the logout function provided by the context
-  };
+  
 
   useEffect(() => {
     if (user) {
@@ -32,7 +29,7 @@ function AuthenticatedPage({ children }) {
     setTimeout(() => {
       setLoading(false); // Set loading to false after data is loaded
     }, 1000); // Adjust the timeout duration as needed
-  }, [user, handleLogout]); // Run the effect whenever user state changes
+  }, [user, logout]); // Run the effect whenever user state changes
 
   // Show the loading spinner while verifying authentication
   if (loading) {
