@@ -1,13 +1,27 @@
 "use client" ; 
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Card } from 'flowbite-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import Spinner from '@/app/(components)/ui-components/Spinner';
+
 
 function Body() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleNavigation = (path) => {
+    setLoading(true);
+    router.push(path);
+  };
+
   return (
-    <div className=" min-h-screen pt-10">
+    <div className="min-h-screen pt-10 relative">
+      {loading && (
+          <Spinner />
+      )}
       <div className="container mx-auto py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="text-center p-8 md:text-left">
@@ -15,15 +29,19 @@ function Body() {
             <p className="text-lg text-gray-700 mb-6">
               Build a professional CV effortlessly with our user-friendly app.
             </p>
-            <button className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700">
-              <Link href="/register">Get Started</Link>
+            <button
+              className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700"
+              onClick={() => handleNavigation('/register')}
+            >
+              Get Started
             </button>
-            <Link
+            <a
               href="/login"
               className="text-blue-600 hover:underline mt-2 block"
+              onClick={() => handleNavigation('/login')}
             >
               Already have an account? Login
-            </Link>
+            </a>
           </div>
           <Image src={'/cvimage 9.jpg'} alt="CV App" width={700} height={100} />
         </div>

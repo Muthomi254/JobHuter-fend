@@ -5,6 +5,8 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../(context)/authContext';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation'; // Correct import for useRouter from Next.js
+import Spinner from '@/app/(components)/ui-components/Spinner';
+
 
 export default function Page() {
   const authContext = useContext(AuthContext);
@@ -15,6 +17,7 @@ export default function Page() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter(); // Initialize useRouter hook
+  const [loading, setLoading] = useState(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword); // Toggle password visibility
@@ -26,7 +29,8 @@ export default function Page() {
       const hasNumber = /\d/.test(password);
       const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
       const isLongEnough = password.length >= 8;
-
+     
+     setLoading(false);
       return (
         hasUppercase &&
         hasLowercase &&
@@ -48,6 +52,8 @@ export default function Page() {
         icon: 'error',
         title: 'Passwords do not match',
       });
+            setLoading(false);
+
       return;
     }
     if (!isSecurePassword(new_password)) {
@@ -56,6 +62,8 @@ export default function Page() {
         title:
           'Password does not meet security requirements Password must contain at least 8 characters including uppercase, lowercase, number, and special character',
       });
+      setLoading(false);
+
       return;
     }
     try {
@@ -73,12 +81,20 @@ export default function Page() {
         title: 'Password reset failed',
         text: error.message,
       });
-    }
-  };
+    } finally {
+      setLoading(false);
+    }  };
+
+    const handleNavigation = (path) => {
+      setLoading(true);
+      router.push(path);
+    };
 
 
   return (
     <div className="flex justify-center items-center h-screen">
+      {loading && <Spinner />}
+
       <form className="max-w-md w-full px-4" onSubmit={handleSubmit}>
         <div className="relative z-0 w-full mb-5 group">
           <input
@@ -112,7 +128,7 @@ export default function Page() {
             className="absolute right-0 top-3 mr-3 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-500"
             onClick={togglePasswordVisibility} // Toggle password visibility on button click
           >
-            {showPassword ? 'Hide' : 'Show'}
+            <div className="text-sm"> {showPassword ? 'Hide' : 'Show'}</div>
           </button>
           <label
             htmlFor="floating_password"
@@ -148,6 +164,9 @@ export default function Page() {
           <div className="flex items-center">
             <a
               href="/login"
+              onClick={() => {
+                handleNavigation('/login');
+              }}
               className="text-gray-600 hover:text-blue-700 dark:text-gray-400 dark:hover:text-blue-600 font-medium text-md hover:underline ml-20"
             >
               BACK TO LOGIN

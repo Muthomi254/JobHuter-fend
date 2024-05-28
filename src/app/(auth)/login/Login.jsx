@@ -2,19 +2,23 @@
 
 import React, { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { AuthContext } from '../../(context)/authContext';
+import Spinner from '@/app/(components)/ui-components/Spinner';
 
 export default function Page() {
- const {user, login} = useContext(AuthContext)
- 
+  const { user, login } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,6 +32,7 @@ export default function Page() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const { email, password } = formData;
 
     // Password validation
@@ -39,6 +44,7 @@ export default function Page() {
         title: 'Oops...',
         text: 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@, $, !, %, *, ?, &)',
       });
+      setLoading(false);
       return;
     }
 
@@ -52,20 +58,28 @@ export default function Page() {
         timer: 2000,
         showConfirmButton: false,
       });
-      router.push('/Cv')
+      router.push('/Cv');
     } catch (error) {
       // Handle login error
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Login failed.  Please try again!',
+        text: 'Login failed. Please try again!',
       });
       console.error('Login error:', error);
+    } finally {
+      setLoading(false);
     }
   };
+    const handleNavigation = (path) => {
+      setLoading(true);
+      router.push(path);
+    };
+
 
   return (
     <div className="flex justify-center items-center h-screen">
+      {loading && <Spinner />}
       <form className="max-w-md w-full px-4" onSubmit={handleSubmit}>
         <div className="mb-5">
           <label
@@ -151,6 +165,9 @@ export default function Page() {
           New here?
           <a
             href="/register"
+            onClick={() => {
+              handleNavigation('/register');
+            }}
             className="text-blue-600 hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-600 font-small text-xs hover:underline ml-2"
           >
             Register
@@ -166,6 +183,9 @@ export default function Page() {
           <div className="ml-20">
             <a
               href="/forgotPassword"
+              onClick={() => {
+                handleNavigation('/forgotPassword');
+              }}
               className="text-blue-600 hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-600 font-small text-xs hover:underline ml-20"
             >
               Forgot Password?
@@ -176,3 +196,4 @@ export default function Page() {
     </div>
   );
 }
+

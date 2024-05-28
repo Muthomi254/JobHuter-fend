@@ -3,10 +3,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../(context)/authContext';
 import Swal from 'sweetalert2';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import Spinner from '@/app/(components)/ui-components/Spinner';
+
 
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
+  const router = useRouter(); // Use the useRouter hook
 
   const handleLogout = async () => {
     Swal.fire({
@@ -29,7 +34,7 @@ function NavBar() {
             showConfirmButton: false,
             timer: 1500,
           }).then(() => {
-            window.location.href = '/login';
+            router.push('/login'); // Use router.push to navigate
           });
         } catch (error) {
           console.error('Logout error:', error);
@@ -38,9 +43,16 @@ function NavBar() {
             title: 'Logout Failed',
             text: 'An error occurred while logging out. Please try again.',
           });
+        } finally {
+          setLoading(false); // Set loading to false after logout completes
         }
       }
     });
+  };
+  // Inside the NavBar component
+  const handleNavigation = (path) => {
+    setLoading(true);
+    router.push(path);
   };
 
   const toggleMenu = () => {
@@ -49,6 +61,9 @@ function NavBar() {
 
   return (
     <div className="pb-20">
+      {loading && ( // Show spinner overlay when loading
+        <Spinner />
+      )}
       <div className="bg-white dark:bg-gray-900 fixed w-full z-50 top-0 border-b border-gray-200 dark:border-gray-600">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -73,6 +88,9 @@ function NavBar() {
             ) : (
               <a
                 href="/register"
+                onClick={() => {
+                  handleNavigation('/register');
+                }}
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Get Started
@@ -112,6 +130,9 @@ function NavBar() {
               <li>
                 <a
                   href={user ? '/Cv' : '/LandingPage'}
+                  onClick={() => {
+                    handleNavigation(user ? '/Cv' : '/LandingPage');
+                  }}
                   className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
                   aria-current="page"
                 >
@@ -121,26 +142,36 @@ function NavBar() {
               <li>
                 <a
                   href="/about"
+                  onClick={() => {
+                    handleNavigation('/about');
+                  }}
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   About
                 </a>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                >
-                  Services
-                </a>
-              </li>
+
               <li>
                 <a
                   href="/Contacts"
+                  onClick={() => {
+                    handleNavigation('/Contacts');
+                  }}
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Contact
                 </a>
+              </li>
+              <li>
+                <span
+                  href="/"
+                  onClick={() => {
+                    handleNavigation('/');
+                  }}
+                  className="block py-2 px-3 text-gray-100 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                >
+                  Services
+                </span>
               </li>
             </ul>
           </div>
