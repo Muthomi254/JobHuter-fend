@@ -10,7 +10,7 @@ const BASE_URL =
 
 export const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+   export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
